@@ -7,7 +7,7 @@ output:
 geometry: margin=2.54cm
 title: "Insert title of project here"
 subtitle: "Web address for GitHub repository"
-author: "Name"
+author: "Tasha Griffiths, Mishka Malinowski, Israel Golden, and Aubrey Knier"
 fontsize: 12pt
 mainfont: Times New Roman
 
@@ -23,10 +23,17 @@ mainfont: Times New Roman
 
 ```{r setup, include=FALSE}
 # Set your working directory
+getwd()
 
 # Load your packages
+library(tidyverse)
+library(ggplot2)
 
 # Set your ggplot theme
+mytheme <- theme_light() +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "right")
+theme_set(mytheme)
 
 # Load your datasets
 
