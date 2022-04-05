@@ -36,7 +36,7 @@ mytheme <- theme_light() +
 theme_set(mytheme)
 
 # Load your datasets
-raw.data <- read.csv("./Data/Raw/Data_USE_ME.csv")
+raw.data <- read.csv("../Data/Raw/Data_USE_ME.csv")
 
 #DATA CLEANING
 #using plots: "DF3B", "DF5A", "DF5B", "DF6A", "DF6B" and "IF2A"
@@ -55,10 +55,14 @@ unique(data.plot.subset$Project.Plot)
 #subset columns/variables we want
 colnames(data.plot.subset)
 data.subset <- data.plot.subset %>%
-  select(E, Date..dd.mm.yyyy..1, Project.Plot, Grid, Plant_tag, X_coord, Y_coord, POM, DBH..mm., Height..meters., Type_Field, ID)
+  select(Project.Plot, Plant_tag, DBH..mm., Height..meters., Type_Field, ID)
 
-colnames(data.subset) = c("Data_Collection_Season", "Date", "Project.Plot", "Grid", "Plant_tag", "X_Coord", "Y_Coord", "POM", "DBH_mm", "Height_m", "Veg_Type", "ID")
+colnames(data.subset) = c("Project.Plot", "Plant_tag", "DBH_mm", "Height_m", "Veg_Type", "ID")
 
+
+#remove lianas 
+#ID-Aubrey, removing NAs 
+#data exploration 
 
 
 ```

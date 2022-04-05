@@ -68,6 +68,7 @@ colnames(data.subset) = c("Project.Plot", "Plant_tag", "DBH_mm", "Height_m", "Ve
 #go with least heavily sampled plot 
 #justify this filtering 
 
+citation()
 
 
 
