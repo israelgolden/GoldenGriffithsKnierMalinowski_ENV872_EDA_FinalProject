@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning"
-author: "Aubrey, Israel, Tasha, Mishka"
+author: "Aubrey & Halina"
 date: "4/3/2022"
 output: html_document
 ---
@@ -19,6 +19,9 @@ mytheme <- theme_light() +
         legend.position = "right")
 theme_set(mytheme)
 
+```
+
+```{r load and subset data}
 # Load your datasets
 raw.data <- read.csv("../Data/Raw/Data_USE_ME.csv")
 
@@ -42,15 +45,81 @@ data.subset <- data.plot.subset %>%
   select(Project.Plot, Plant_tag, DBH..mm., Height..meters., Type_Field, ID)
 
 colnames(data.subset) = c("Project.Plot", "Plant_tag", "DBH_mm", "Height_m", "Veg_Type", "ID")
+colnames(data.subset)
+
+```
+
+```{r cleaning dataset & columns}
 
 #remove data we don't want to use or is missing
 data.subset <- data.subset %>%
-  filter(Height_m > 1.5) %>% #remove specimens wit height < 1.5m
-    filter(Veg_Type != "Liana") %>% #remove lianas
+  na.omit(DBH_mm)%>% #remove DBH with no values
+  filter(Height_m > 1.49) %>% #remove specimens wit height < 1.5
+  filter(Veg_Type != "Liana") %>% #remove lianas
       filter(ID != "#N/A") %>% #remove species ID called "#N/A"
       filter(ID != "") #remove species ID with ""
 
+#check through columns
+#Plant_tag
+summary(data.subset$Plant_tag)
+
+#DBH
+summary(data.subset$DBH_mm)
+#max appears reasonable!
+#min seems much too small - explore further 
+nrow(data.subset[data.subset$DBH_mm == 0.10,]) 
+which(data.subset$DBH_mm == 0.10)
+data.subset <- data.subset %>% 
+  filter(DBH_mm > 1.0) # values below 1 were unreasonable for a height >1.5, most likely a unit error and the raw data will have to be examined and re-entered 
+
+#Plot to examine the relationship between DBH and Height
+ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
+                                                   color = Project.Plot))+
+  geom_point()+
+  xlab("DBH (mm)") + ylab("Height (m)")+ 
+  ggtitle("DBH vs. Height Comparison")+ 
+  geom_smooth()
+#clearly there are errors with data entry or collection
+
+#Height 
+summary(data.subset$Height_m)
+
+#Veg_Type
+summary(data.subset$Veg_Type)
+unique(data.subset$Veg_Type)
+data.subset$Veg_Type[data.subset$Veg_Type %in% c("tree","TREE")] <- "Tree"
+data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
+
 ```
+
+``` {r add new columns}
+#Add Status column - defaunated or intact forest
+data.subset <- data.subset %>% 
+  mutate(Status = Project.Plot)
+unique(data.subset$Status)
+data.subset$Status[data.subset$Status %in% c("DF_3B","DF_5A", "DF_5B", "DF_6A", "DF_6B")] <- "Defaunated"
+data.subset$Status[data.subset$Status %in% c("IF_2A")] <- "Intact"
+unique(data.subset$Status)
+
+#Add distance from village column 
+data.subset <- data.subset %>% 
+  mutate(Distance_km = Project.Plot)
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_3B")] <- "20.195"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_5A")] <- "8.177"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_5B")] <- "9.323"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_6A")] <- "23.839"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_6B")] <- "23.839"
+data.subset$Distance_km[data.subset$Distance_km %in% c("IF_2A")] <- "40.224"
+data.subset$Distance_km <- as.numeric(data.subset$Distance_km)
+class(data.subset$Distance_km)
+
+#Overall summary 
+summary(data.subset)
+dim(data.subset)
+head(data.subset)
+
+```
+
 
 ```{r, species data cleaning}
 
@@ -140,31 +209,8 @@ data.subset$ID[data.subset$ID %in% c("Chytranthus talboti")] <- "Chytranthus tal
 data.subset$ID[data.subset$ID %in% c("Agelaea paradoxa" )] <- "Agellae paradoxa" 
 ```
 
-```{r}
-#data exploration 
-#distances - conditional statement? use actual distances 
-#add column - intact or defaunated 
-#gradient = cool :)
-
-#into glm 
-#dependent basal area independent veg_type, height, project.plot, distance, defaun/intact, 
-
-#does distance change... frequency of vegetation types 
-
-#plot level summaries 
-#exploratory figures 
-
-#sum of each plot how many unique species. 
-
-#grouping size class distribution 
-#histogram of sizes and make breaks based on data 
-
-
-#go with least heavily sampled plot 
-#justify this filtering 
-
-citation()
-
-
+```{r export cleaned dataset}
+write.csv(data.subset, row.names = FALSE, 
+          file = "../Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv")
 
 ```
