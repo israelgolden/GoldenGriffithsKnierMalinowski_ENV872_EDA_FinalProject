@@ -50,35 +50,9 @@ data.subset <- data.subset %>%
       filter(ID != "#N/A") %>% #remove species ID called "#N/A"
       filter(ID != "") #remove species ID with ""
 
-#data exploration 
-#distances - conditional statement? use actual distances 
-#add column - intact or defaunated 
-#gradient = cool :)
-
-#into glm 
-#dependent basal area independent veg_type, height, project.plot, distance, defaun/intact, 
-
-#does distance change... frequency of vegetation types 
-
-#plot level summaries 
-#exploratory figures 
-
-#sum of each plot how many unique species. 
-
-#grouping size class distribution 
-#histogram of sizes and make breaks based on data 
-
-
-#go with least heavily sampled plot 
-#justify this filtering 
-
-citation()
-
-
-
 ```
 
-```{r}
+```{r, species data cleaning}
 
 #Species IDs
 sort(unique(data.subset$ID))
@@ -164,4 +138,33 @@ data.subset$ID[data.subset$ID %in% c("cola sp 1")] <- "Cola sp 1"
 data.subset$ID[data.subset$ID %in% c("Coelocaryron preussii")] <- "Coelocaryon preussii"
 data.subset$ID[data.subset$ID %in% c("Chytranthus talboti")] <- "Chytranthus talbotii"
 data.subset$ID[data.subset$ID %in% c("Agelaea paradoxa" )] <- "Agellae paradoxa" 
+```
+
+```{r}
+#data exploration 
+#distances - conditional statement? use actual distances 
+#add column - intact or defaunated 
+#gradient = cool :)
+
+#into glm 
+#dependent basal area independent veg_type, height, project.plot, distance, defaun/intact, 
+
+#does distance change... frequency of vegetation types 
+
+#plot level summaries 
+#exploratory figures 
+
+#sum of each plot how many unique species. 
+
+#grouping size class distribution 
+#histogram of sizes and make breaks based on data 
+
+
+#go with least heavily sampled plot 
+#justify this filtering 
+
+citation()
+
+
+
 ```
