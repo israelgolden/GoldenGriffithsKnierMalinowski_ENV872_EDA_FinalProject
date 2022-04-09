@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning"
-author: "Aubrey, Israel, Tasha, Mishka"
+author: "Aubrey & Halina"
 date: "4/3/2022"
 output: html_document
 ---
@@ -19,6 +19,9 @@ mytheme <- theme_light() +
         legend.position = "right")
 theme_set(mytheme)
 
+```
+
+```{r load and subset data}
 # Load your datasets
 raw.data <- read.csv("../Data/Raw/Data_USE_ME.csv")
 
@@ -42,54 +45,172 @@ data.subset <- data.plot.subset %>%
   select(Project.Plot, Plant_tag, DBH..mm., Height..meters., Type_Field, ID)
 
 colnames(data.subset) = c("Project.Plot", "Plant_tag", "DBH_mm", "Height_m", "Veg_Type", "ID")
-
-
-#remove lianas 
-#ID-Aubrey, removing NAs 
-#data exploration 
-#distances - conditional statement? use actual distances 
-#add column - intact or defaunated 
-#gradient = cool :)
-
-#into glm 
-#dependent basal area independent veg_type, height, project.plot, distance, defaun/intact, 
-
-#does distance change... frequency of vegetation types 
-
-#plot level summaries 
-#exploratory figures 
-
-#sum of each plot how many unique species. 
-
-#grouping size class distribution 
-#histogram of sizes and make breaks based on data 
-
-#remove anything less than 1.5 m in height 
-#go with least heavily sampled plot 
-#justify this filtering 
-
-
-
+colnames(data.subset)
 
 ```
+
+```{r cleaning dataset & columns}
+
+#remove data we don't want to use or is missing
+data.subset <- data.subset %>%
+  na.omit(DBH_mm)%>% #remove DBH with no values
+  filter(Height_m > 1.49) %>% #remove specimens wit height < 1.5
+  filter(Veg_Type != "Liana") %>% #remove lianas
+      filter(ID != "#N/A") %>% #remove species ID called "#N/A"
+      filter(ID != "") #remove species ID with ""
+
+#check through columns
+#Plant_tag
+summary(data.subset$Plant_tag)
+
+#DBH
+summary(data.subset$DBH_mm)
+#max appears reasonable!
+#min seems much too small - explore further 
+nrow(data.subset[data.subset$DBH_mm == 0.10,]) 
+which(data.subset$DBH_mm == 0.10)
+data.subset <- data.subset %>% 
+  filter(DBH_mm > 1.0) # values below 1 were unreasonable for a height >1.5, most likely a unit error and the raw data will have to be examined and re-entered 
+
+#Plot to examine the relationship between DBH and Height
+ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
+                                                   color = Project.Plot))+
+  geom_point()+
+  xlab("DBH (mm)") + ylab("Height (m)")+ 
+  ggtitle("DBH vs. Height Comparison")+ 
+  geom_smooth()
+#clearly there are errors with data entry or collection
+
+#Height 
+summary(data.subset$Height_m)
+
+#Veg_Type
+summary(data.subset$Veg_Type)
+unique(data.subset$Veg_Type)
+data.subset$Veg_Type[data.subset$Veg_Type %in% c("tree","TREE")] <- "Tree"
+data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
+
 ```
 
-## R Markdown
+``` {r add new columns}
+#Add Status column - defaunated or intact forest
+data.subset <- data.subset %>% 
+  mutate(Status = Project.Plot)
+unique(data.subset$Status)
+data.subset$Status[data.subset$Status %in% c("DF_3B","DF_5A", "DF_5B", "DF_6A", "DF_6B")] <- "Defaunated"
+data.subset$Status[data.subset$Status %in% c("IF_2A")] <- "Intact"
+unique(data.subset$Status)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+#Add distance from village column 
+data.subset <- data.subset %>% 
+  mutate(Distance_km = Project.Plot)
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_3B")] <- "20.195"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_5A")] <- "8.177"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_5B")] <- "9.323"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_6A")] <- "23.839"
+data.subset$Distance_km[data.subset$Distance_km %in% c("DF_6B")] <- "23.839"
+data.subset$Distance_km[data.subset$Distance_km %in% c("IF_2A")] <- "40.224"
+data.subset$Distance_km <- as.numeric(data.subset$Distance_km)
+class(data.subset$Distance_km)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#Overall summary 
+summary(data.subset)
+dim(data.subset)
+head(data.subset)
 
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r, species data cleaning}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#Species IDs
+sort(unique(data.subset$ID))
+
+#remove more lianas that were input into ID column
+data.subset <- data.subset %>%
+  filter(ID != "Liana undetermined",  
+         ID != "Liane sp 100",
+         ID != "Liane sp 130",
+         ID != "Liane sp 130",
+         ID != "Liane sp 18", 
+         ID != "Liane sp 20",
+         ID != "Liane 1",
+         ID != "Liane sp 1",
+         ID != "Liane sp 17",
+         ID != "Liane sp 21",
+          ID != "liane sp 26",
+         ID !=  "Liane sp 30",
+         ID != "Liane sp 40",
+         ID != "Liane sp 7",
+         ID != "Liane sp 71",
+         ID != "Liane sp 75",
+          ID != "Liane sp 91",
+         ID != "Liane sp 96",
+         ID != "Liane A" ,
+          ID != "Liane sp 12",
+         ID != "Liane sp 19" ,
+         ID !="Liane sp 23",
+         ID != "Liane sp 26",
+         ID != "Liane sp 36",
+         ID != "Liane sp 6",
+          ID != "Liane sp 70",
+         ID != "Liane sp 74",
+         ID != "Liane sp 80",
+         ID != "Liane sp 92",
+         ID != "Liane undetermined"
+         )
+
+#remove "undetermined" and "tag removed" species IDs
+data.subset <- data.subset %>%
+  filter(ID != "undetermined" ,
+         ID != "Undetermined",
+         ID !=  "Undetermined sp 10",
+         ID != "Undetermined sp 20",
+         ID != "Undetermined sp 3",
+         ID != "Undetermined sp 30",
+         ID != "Undetermined sp 7",
+         ID != "Tree undetermined",
+         ID != "tree undetermined",
+         ID != "tag removed",
+          ID != "Tag removed" )
+
+#check that all lianas, "undetermined"s, and "tag removed" are gone
+sort(unique(data.subset$ID))
+    
+#correcting spelling mistakes that make the same species appear separate in the code
+data.subset$ID[data.subset$ID %in% c("Afrostyrax lepidophloeus")] <- "Afrostyrax lepidophyllus"
+data.subset$ID[data.subset$ID %in% c("Agellae paradoxa")] <- "Agelaea paradoxa"
+data.subset$ID[data.subset$ID %in% c("Xylopia quintesi")] <- "Xylopia quintasii"
+data.subset$ID[data.subset$ID %in% c("Tricoscypha acuminata")] <- "Trichoscypha acuminata"
+data.subset$ID[data.subset$ID %in% c("Tricoscypha abut")] <- "Trichoscypha abut"
+data.subset$ID[data.subset$ID %in% c("trichilia sp 1")] <- "Trichilia sp 1"
+data.subset$ID[data.subset$ID %in% c("Tessmania africana")] <- "Tessmannia africana"
+data.subset$ID[data.subset$ID %in% c("Strombosiopsis tetranda")] <- "Strombosiopsis tetrandra"
+data.subset$ID[data.subset$ID %in% c("salacia sp 1")] <- "Salacia sp 1"
+data.subset$ID[data.subset$ID %in% c("Pseudoposopis giletti")] <- "Pseudoprosopis gilletti"
+data.subset$ID[data.subset$ID %in% c("Pentaclethra aetveldiana")] <- "Pentaclethra eetveldeana"
+data.subset$ID[data.subset$ID %in% c("Pausinystalia Johimbe")] <- "Pausinystalia johimbe"
+data.subset$ID[data.subset$ID %in% c("Napoleona vogelei")] <- "Napoleona vogellei"
+data.subset$ID[data.subset$ID %in% c("Klaineanthus gaboni")] <- "Klaineanthus gabonii"
+data.subset$ID[data.subset$ID %in% c("Greenwaydendron suavolens")] <- "Greenwayodendron suaveolens"
+data.subset$ID[data.subset$ID %in% c("Garcinia afzelii")] <- "Garcinia afzelli"
+data.subset$ID[data.subset$ID %in% c("Drypetes gosseweileri")] <- "Drypetes gossweileri"
+data.subset$ID[data.subset$ID %in% c("Dismonanthus bentanianus")] <- "Distemonanthus benthamianus"
+data.subset$ID[data.subset$ID %in% c("diospyros sp 5")] <- "Diospyros sp 5" 
+data.subset$ID[data.subset$ID %in% c("diospyros sp 6")] <- "Diospyros sp 6" 
+data.subset$ID[data.subset$ID %in% c("Diogua zenkeri")] <- "Diogoa zenkeri"
+data.subset$ID[data.subset$ID %in% c("Dialium denclagei")] <- "Dialium dinklagei" 
+data.subset$ID[data.subset$ID %in% c("Dialium bipendensis")] <- "Dialium bipindense" 
+data.subset$ID[data.subset$ID %in% c("Dachriodes kleiniana")] <- "Dacryodes klaineana"
+data.subset$ID[data.subset$ID %in% c("Dachriodes butineri")] <- "Dacryodes buettneri"
+data.subset$ID[data.subset$ID %in% c("cola sp 1")] <- "Cola sp 1" 
+data.subset$ID[data.subset$ID %in% c("Coelocaryron preussii")] <- "Coelocaryon preussii"
+data.subset$ID[data.subset$ID %in% c("Chytranthus talboti")] <- "Chytranthus talbotii"
+data.subset$ID[data.subset$ID %in% c("Agelaea paradoxa" )] <- "Agellae paradoxa" 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r export cleaned dataset}
+write.csv(data.subset, row.names = FALSE, 
+          file = "../Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv")
+
+```
