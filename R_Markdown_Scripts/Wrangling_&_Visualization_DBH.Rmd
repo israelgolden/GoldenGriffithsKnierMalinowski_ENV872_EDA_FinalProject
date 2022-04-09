@@ -41,17 +41,110 @@ dim(fulldata)
 colnames(fulldata)
 str(fulldata)
 
+#set theme
+mytheme <- theme_classic(base_size = 12) + 
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "bottom")
+
+theme_set(mytheme)
 
 ```
 
 ## Graphs
 
-for final slides
+These graphs outline that DBH is higher in plots closer to the city. 5A and 5B have higher frequencies of larger trees as compared to site IF_2A which has far more small DBH trees and very very few large DBH trees. However, overall most of the site histograms resemeble each other and are skewed to the smaller DBH side of the scale. This means there are higher frequencies of thinner trees which tends to indicate a younger forest. 
 
 ```{r graphs, echo=FALSE}
 
+#basic visualization
+DBHbyplot <- ggplot(fulldata, 
+                    aes(x = Project.Plot, y = DBH_mm, color = Project.Plot)) +
+  geom_point() + xlab("Project Plot") + ylab( "DBH in Milimeter")
+print(DBHbyplot)
 
 
+#checking distance  
+ggplot(fulldata, aes(x = Project.Plot, y = Distance_km)) + geom_point()
+#order by closest to city - DF_5A, DF_5B, DF_3B, DF_6A, DF_6B, IF_2A
+
+ordereddata <- arrange(fulldata, Distance_km)
+
+#x axis is DBH, Y axis is frequency  - for each plot as a histogram
+#wrangle data for each plotsite
+DF_5A_Data <- subset(fulldata, Project.Plot== "DF_5A")
+DF_5B_Data <- subset(fulldata, Project.Plot== "DF_5B")
+DF_3B_Data <- subset(fulldata, Project.Plot== "DF_3B")
+DF_6A_Data <- subset(fulldata, Project.Plot== "DF_6A")
+DF_6B_Data <- subset(fulldata, Project.Plot== "DF_6B")
+IF_2A_Data <- subset(fulldata, Project.Plot== "IF_2A")
+
+#individual historgram full data
+plot_DF_5A <- ggplot(DF_5AData, 
+                    aes(x = DBH_mm)) +
+  geom_histogram() + xlab("DBH in mm") + ylab( "Frequency")
+print(plot_DF_5A)
+
+#individual histogram limited DBH scale
+plot_DF_5A <- ggplot(DF_5AData, 
+                    aes(x = DBH_mm)) +
+  geom_histogram() + xlim(0,550) +
+  xlab("DBH in mm") + ylab( "Frequency") + ggtitle("DBH of Site DF_5A")
+print(plot_DF_5A)
+
+
+#histogram of all
+allsitesbyDBH <- ggplot(fulldata, aes(x = DBH_mm, color = Project.Plot)) +
+  geom_histogram() + facet_wrap(vars(Project.Plot)) + #xlim(0,1000) +
+  xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+print(allsitesbyDBH)
+
+allsitesbyDBH_limitedx <- ggplot(fulldata, aes(x = DBH_mm, color = Project.Plot)) +
+  geom_histogram() + facet_wrap(vars(Project.Plot)) + xlim(0,150) +
+  xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+print(allsitesbyDBH_limitedx)
+
+
+#re-order facet_wrap by distance from city
+allsitesordered <- ggplot(transform(fulldata, Project.Plot=factor(Project.Plot, levels=c("DF_5A", "DF_5B", "DF_3B", "DF_6A", "DF_6B", "IF_2A")))) + geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + facet_wrap(vars(Project.Plot)) +
+  xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+print(allsitesordered)
+
+allsitesordered_limitedx <- ggplot(transform(fulldata, Project.Plot=factor(Project.Plot, levels=c("DF_5A", "DF_5B", "DF_3B", "DF_6A", "DF_6B", "IF_2A")))) + geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + facet_wrap(vars(Project.Plot)) + xlim(0,150) +
+  xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+print(allsitesordered_limitedx)
+
+
+
+#old
+#order plots by distance
+DBHbydistance <- ggplot(fulldata, 
+                    aes(x = Distance_km, y = DBH_mm, color = Project.Plot)) +
+  geom_violin() + xlab("Distance from City") + ylab( "DBH in Milimeter")
+print(DBHbydistance)
+  
+#remove outliers
+DBHbydistance2 <- ggplot(fulldata, 
+                    aes(x = Distance_km, y = DBH_mm, color = Project.Plot)) +
+  geom_violin() + ylim(0,200) + 
+  xlab("Distance from City") + ylab( "DBH in Milimeter")
+print(DBHbydistance2)
+
+
+
+
+#old ones to look at
+ggplot(Neonics, aes(x = Neonics$Endpoint)) +
+  geom_bar() +
+theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+
+NTL.LTER.plot <- ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = po4, 
+                                                      color = lakename)) + 
+  geom_point() + ylim(0, 50) + #add points and limit outliers
+  scale_color_manual(values=c("orange", "steelblue3")) + #separate colors for each lake
+  xlab("Total Phosphorus") + ylab("Phosphate") + #change axis labels to be more clear 
+  geom_smooth(colour="black", method = lm) #adding linear best fit line
+print(NTL.LTER.plot)
 
 ```
 
