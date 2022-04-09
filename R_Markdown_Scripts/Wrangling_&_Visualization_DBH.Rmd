@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## How does defaunation affect forest structure? 
 
-How does the DBH Class Distribution respond to the defaunation gradient?
+Question 2. How does the DBH Class Distribution respond to the defaunation gradient?
 
-create a graph with X axis DBH, Y axis number of trees, separated by areas with elephants and areas without elephants. 
+create a graph with X axis DBH, Y axis number of trees/frequency, separated by areas with elephants and areas without elephants (ex. plots)
 
 ```{r load data & setup}
 
@@ -52,7 +52,9 @@ theme_set(mytheme)
 
 ## Graphs
 
-These graphs outline that DBH is higher in plots closer to the city. 5A and 5B have higher frequencies of larger trees as compared to site IF_2A which has far more small DBH trees and very very few large DBH trees. However, overall most of the site histograms resemeble each other and are skewed to the smaller DBH side of the scale. This means there are higher frequencies of thinner trees which tends to indicate a younger forest. 
+These graphs outline that DBH is higher in plots closer to the city. 5A and 5B have higher frequencies of larger trees as compared to site IF_2A which has far more small DBH trees and very very few large DBH trees. However, overall most of the site histograms resemble each other and are skewed to the smaller DBH side of the scale. This means there are higher frequencies of thinner trees which tends to indicate a younger forest. 
+
+DBH was taken in millimeter, as a reminder 100 millimeters is about 4 inches.
 
 ```{r graphs, echo=FALSE}
 
@@ -69,7 +71,6 @@ ggplot(fulldata, aes(x = Project.Plot, y = Distance_km)) + geom_point()
 
 ordereddata <- arrange(fulldata, Distance_km)
 
-#x axis is DBH, Y axis is frequency  - for each plot as a histogram
 #wrangle data for each plotsite
 DF_5A_Data <- subset(fulldata, Project.Plot== "DF_5A")
 DF_5B_Data <- subset(fulldata, Project.Plot== "DF_5B")
@@ -79,22 +80,30 @@ DF_6B_Data <- subset(fulldata, Project.Plot== "DF_6B")
 IF_2A_Data <- subset(fulldata, Project.Plot== "IF_2A")
 
 #individual historgram full data
-plot_DF_5A <- ggplot(DF_5AData, 
-                    aes(x = DBH_mm)) +
-  geom_histogram() + xlab("DBH in mm") + ylab( "Frequency")
+plot_DF_5A <- ggplot(DF_5A_Data, 
+                    aes(x = DBH_mm, color=Project.Plot)) +
+  geom_histogram(color= "orange") + xlab("DBH in mm") + ylab( "Frequency") + 
+  ggtitle("DBH of Site DF_5A")
 print(plot_DF_5A)
 
+plot_IF_2A <- ggplot(IF_2A_Data, 
+                    aes(x = DBH_mm, color=Project.Plot)) +
+  geom_histogram(color = "pink") + xlab("DBH in mm") + ylab( "Frequency") + 
+  ggtitle("DBH of Site IF_2A")
+print(plot_IF_2A)
+
+
 #individual histogram limited DBH scale
-plot_DF_5A <- ggplot(DF_5AData, 
+plot_DF_5A_limited <- ggplot(DF_5AData, 
                     aes(x = DBH_mm)) +
   geom_histogram() + xlim(0,550) +
   xlab("DBH in mm") + ylab( "Frequency") + ggtitle("DBH of Site DF_5A")
-print(plot_DF_5A)
+print(plot_DF_5A_limited)
 
 
-#histogram of all
+#histogram of all sites
 allsitesbyDBH <- ggplot(fulldata, aes(x = DBH_mm, color = Project.Plot)) +
-  geom_histogram() + facet_wrap(vars(Project.Plot)) + #xlim(0,1000) +
+  geom_histogram() + facet_wrap(vars(Project.Plot)) +
   xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
 print(allsitesbyDBH)
 
@@ -105,46 +114,46 @@ print(allsitesbyDBH_limitedx)
 
 
 #re-order facet_wrap by distance from city
-allsitesordered <- ggplot(transform(fulldata, Project.Plot=factor(Project.Plot, levels=c("DF_5A", "DF_5B", "DF_3B", "DF_6A", "DF_6B", "IF_2A")))) + geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + facet_wrap(vars(Project.Plot)) +
+allsitesordered <- ggplot(transform(fulldata, 
+                                    Project.Plot=factor(Project.Plot, 
+                                                        levels=c("DF_5A", 
+                                                                 "DF_5B", 
+                                                                 "DF_3B", 
+                                                                 "DF_6A", 
+                                                                 "DF_6B", 
+                                                                 "IF_2A")))) + 
+  geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + 
+  facet_wrap(vars(Project.Plot)) +
   xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
 print(allsitesordered)
 
-allsitesordered_limitedx <- ggplot(transform(fulldata, Project.Plot=factor(Project.Plot, levels=c("DF_5A", "DF_5B", "DF_3B", "DF_6A", "DF_6B", "IF_2A")))) + geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + facet_wrap(vars(Project.Plot)) + xlim(0,150) +
+
+allsitesordered_limitedx <- ggplot(transform(fulldata, 
+                                             Project.Plot=factor(Project.Plot, 
+                                                                 levels=c("DF_5A", 
+                                                                          "DF_5B", 
+                                                                          "DF_3B", 
+                                                                          "DF_6A", 
+                                                                          "DF_6B", 
+                                                                          "IF_2A")))) +
+  geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + 
+  facet_wrap(vars(Project.Plot)) + xlim(0,150) +
   xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
 print(allsitesordered_limitedx)
 
 
-
-#old
-#order plots by distance
-DBHbydistance <- ggplot(fulldata, 
-                    aes(x = Distance_km, y = DBH_mm, color = Project.Plot)) +
-  geom_violin() + xlab("Distance from City") + ylab( "DBH in Milimeter")
-print(DBHbydistance)
-  
-#remove outliers
-DBHbydistance2 <- ggplot(fulldata, 
-                    aes(x = Distance_km, y = DBH_mm, color = Project.Plot)) +
-  geom_violin() + ylim(0,200) + 
-  xlab("Distance from City") + ylab( "DBH in Milimeter")
-print(DBHbydistance2)
+#otherways to determine differences in DBH per site
+summary(DF_5A_Data$DBH_mm)
+summary (IF_2A_Data$DBH_mm)
 
 
+DBHstats <- ggplot(fulldata, 
+                    aes(x = DBH_mm, color = Project.Plot)) +
+  geom_bar() + xlim(0, 500) +
+  xlab("DBH") + ylab( "Frequency")
+print(DBHstats)
 
 
-#old ones to look at
-ggplot(Neonics, aes(x = Neonics$Endpoint)) +
-  geom_bar() +
-theme(axis.text.x = element_text(angle = 70, hjust = 1))
-
-
-NTL.LTER.plot <- ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = po4, 
-                                                      color = lakename)) + 
-  geom_point() + ylim(0, 50) + #add points and limit outliers
-  scale_color_manual(values=c("orange", "steelblue3")) + #separate colors for each lake
-  xlab("Total Phosphorus") + ylab("Phosphate") + #change axis labels to be more clear 
-  geom_smooth(colour="black", method = lm) #adding linear best fit line
-print(NTL.LTER.plot)
 
 ```
 
