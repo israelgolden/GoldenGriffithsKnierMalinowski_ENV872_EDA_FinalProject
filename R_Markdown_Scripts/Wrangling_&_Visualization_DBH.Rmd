@@ -17,11 +17,29 @@ create a graph with X axis DBH, Y axis number of trees, separated by areas with 
 
 ```{r load data & setup}
 
+#check working directory location
 getwd()
 
 
+#load package for session
+library(tidyverse)
+library(formatR)
+library(ggplot2)
 
+#load dataset
+fulldata <- read.csv("./Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv", 
+                     stringsAsFactors = TRUE)
 
+#basic summaries of dataset
+class(fulldata)
+summary(fulldata)
+
+#dimensions of dataset
+dim(fulldata)
+
+#to view dataset
+colnames(fulldata)
+str(fulldata)
 
 
 ```
