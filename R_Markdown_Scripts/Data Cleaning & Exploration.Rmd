@@ -32,6 +32,8 @@ raw.data <- read.csv("../Data/Raw/Data_USE_ME.csv")
 unique(raw.data$Project)
 unique(raw.data$Plot)
 
+colnames(raw.data)
+
 data.plot.subset <- raw.data %>%
   unite("Project.Plot", Project:Plot, remove=F) %>%
     filter(Project.Plot %in% c("DF_3B", "DF_5A", "DF_5B", "DF_6A", "DF_6B", "IF_2A"))

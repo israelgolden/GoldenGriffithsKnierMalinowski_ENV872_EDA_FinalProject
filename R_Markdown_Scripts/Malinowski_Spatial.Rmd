@@ -1,0 +1,110 @@
+---
+title: "Spatial Analysis"
+author: "Halina Malinowski"
+date: "4/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Set up! 
+
+```{r setup, echo = FALSE}
+#Check working directory
+getwd()
+
+#Load packages 
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(mapview)
+library(lubridate)
+library(RColorBrewer)
+library(raster)
+
+#Set theme
+mytheme <- theme_light(base_size = 12) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "right")
+theme_set
+
+```
+
+```{r creating map of Africa}
+
+Africa <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Africa/afr_g2014_2013_0.shp')
+
+#Determine coordinate reference system & explore columns
+st_crs(Africa)#WGS 84
+colnames(Africa)
+
+#Map of Africa
+mapView(Africa,zcol = "ADM0_NAME")
+```
+
+```{r Map of Gabon}
+#Making Gabon sf
+Gabon <- Africa %>%
+  filter(ADM0_NAME == 'Gabon')
+
+#Maping Gabon
+mapview(Africa, col.regions = "mediumpurple3")+ 
+  mapview(Gabon, col.regions = "springgreen")
+
+```
+
+```{r Detailed Map of Gabon with parks}
+#Parks sf
+Parks <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/National Parks/NP_PresRes.shp')
+
+st_crs(Parks) #Gtm_Gabon
+colnames(Parks)
+
+#change crs to WGS 84
+National_Parks <- st_transform(Parks, "+proj=longlat +datum=WGS84")
+st_crs(Parks_WGS84)
+
+#Getting Ivindo National Park by itself
+Ivindo_NP <- Parks_WGS84 %>%
+  filter(NOM == "IVINDO")
+
+mapview(Gabon, col.regions = "palegreen1")+
+  mapview(National_Parks, col.region = "palegreen3")+
+  mapview(Ivindo_NP, col.region = "darkgreen", lwd = 1.5, color = "black")
+``` 
+
+
+
+```{r Map of Ivindo with plots}
+
+#Rivers sf 
+Rivers <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Stream/GAB_hydro_lineaire_principal_2013/GAB_hydro_lineaire_principal_2013.shp')
+st_crs(Rivers)
+
+#Roads sf
+Roads <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Roads/GAB_major_roads_2013.shp')
+st_crs(Roads)
+  
+#Makokou village
+Makokou <- read_csv('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Makokou_Coordinates.csv')%>%
+  st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
+st_crs(Makokou)
+Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
+
+
+#Plots sf
+Plots <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Plots/Plots with species/plots_with_species.shp')
+
+#CRS
+st_crs(Plots) #WGS 84
+colnames(Plots)
+
+#Map Gabon with Parks and Plots
+mapview(Ivindo_NP, col.region = "palegreen2")+
+  mapview(Plots, zcol = "Plot_Name")+
+  mapview(Makokou, col.region = "black")
+
+```
+
