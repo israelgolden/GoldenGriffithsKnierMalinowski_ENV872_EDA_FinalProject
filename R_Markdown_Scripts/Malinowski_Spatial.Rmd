@@ -64,10 +64,10 @@ colnames(Parks)
 
 #change crs to WGS 84
 National_Parks <- st_transform(Parks, "+proj=longlat +datum=WGS84")
-st_crs(Parks_WGS84)
+st_crs(National_Parks)
 
 #Getting Ivindo National Park by itself
-Ivindo_NP <- Parks_WGS84 %>%
+Ivindo_NP <- National_Parks %>%
   filter(NOM == "IVINDO")
 
 mapview(Gabon, col.regions = "palegreen1")+
@@ -102,9 +102,11 @@ st_crs(Plots) #WGS 84
 colnames(Plots)
 
 #Map Gabon with Parks and Plots
-mapview(Ivindo_NP, col.region = "palegreen2")+
-  mapview(Plots, zcol = "Plot_Name")+
-  mapview(Makokou, col.region = "black")
+mapviewPalette(name = "mapviewVectorColors")
+
+mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.regions = 0.5)+
+  mapview(Plots, zcol = "Plot_Name", col.region = c("magenta","red","orangered","orange","gold","yellow"), cex = 4, alpha.regions = 0.95)+
+  mapview(Makokou, col.region = "black", cex = 4, alpha.regions = 0.95)
 
 ```
 
