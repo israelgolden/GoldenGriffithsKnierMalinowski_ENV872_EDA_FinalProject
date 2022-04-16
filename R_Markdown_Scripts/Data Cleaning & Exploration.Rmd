@@ -59,8 +59,9 @@ data.subset <- data.subset %>%
   filter(Height_m > 1.49) %>% #remove specimens wit height < 1.5
   filter(Veg_Type != "Liana") %>% #remove lianas
       filter(ID != "#N/A") %>% #remove species ID called "#N/A"
-      filter(ID != "") #remove species ID with ""
-
+      filter(ID != "") %>% #remove species ID with ""
+      filter(!grepl("ECH", ID))
+  
 #check through columns
 #Plant_tag
 summary(data.subset$Plant_tag)
@@ -178,6 +179,7 @@ data.subset <- data.subset %>%
 
 #check that all lianas, "undetermined"s, and "tag removed" are gone
 sort(unique(data.subset$ID))
+length(unique(data.subset$ID))
     
 #correcting spelling mistakes that make the same species appear separate in the code
 data.subset$ID[data.subset$ID %in% c("Afrostyrax lepidophloeus")] <- "Afrostyrax lepidophyllus"
