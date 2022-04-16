@@ -5,9 +5,9 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Defaunation Gradients"
-subtitle: "Web address for GitHub repository"
-author: "Name"
+title: "Effects of a Defaunation Gradient on Tropical Forest Structure in Ivindo National Park, Gabon"
+subtitle: "https://github.com/israelgolden/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject"
+author: "Tashsa Griffiths, Israel Golden, Aubrey Knier, and Mishka Malinowski"
 fontsize: 12pt
 mainfont: Times New Roman
 
