@@ -1,5 +1,5 @@
 ---
-output: 
+output: pdf_document
   pdf_document:
     keep_tex: yes
     fig_caption: yes
@@ -45,6 +45,14 @@ theme_set(mytheme)
 # Load your datasets
 raw.data <- read.csv("./Data/Raw/Data_USE_ME.csv")
 
+# Load spatial files
+Africa <- st_read('./Data/Spatial Files/Africa/afr_g2014_2013_0.shp')
+Parks <- st_read('./Data/Spatial Files/Gabon/National Parks/NP_PresRes.shp')
+Rivers <- st_read('./Data/Spatial Files/Gabon/Stream/GAB_hydro_lineaire_principal_2013/GAB_hydro_lineaire_principal_2013.shp')
+Roads <- st_read('./Data/Spatial Files/Gabon/Roads/GAB_major_roads_2013.shp')
+Makokou <- read_csv('./Data/Spatial Files/Gabon/Makokou_Coordinates.csv')
+Plots <- st_read('./Data/Spatial Files/Gabon/Plots/Plots with species/plots_with_species.shp')
+
 ```
 
 
@@ -56,18 +64,15 @@ raw.data <- read.csv("./Data/Raw/Data_USE_ME.csv")
 
 # Dataset Information
 
+This dataset if provided by the Pouslen Tropical Ecology Lab here at Duke. 
 ```{r dataset info}
 dim(raw.data)
 ```
 
+# Data Cleaning & Wrangling
 
-\newpage
-
-# Exploratory Analysis 
-
-# Data Cleaning
-
-```{r load and subset data}
+With such a large dataset, data cleaning and wrangling was an essential process for creating a manageable dataset that was relevant for answering our research questions. First, we subset our selected six plots for our analysis:
+```{r load and subset data, include=F}
 #DATA CLEANING
 #using plots: "DF3B", "DF5A", "DF5B", "DF6A", "DF6B" and "IF2A"
 
@@ -80,10 +85,15 @@ colnames(raw.data)
 data.plot.subset <- raw.data %>%
   unite("Project.Plot", Project:Plot, remove=F) %>%
     filter(Project.Plot %in% c("DF_3B", "DF_5A", "DF_5B", "DF_6A", "DF_6B", "IF_2A"))
+```
 
+```{r subset plot names, echo=F}
 #check row names of Project.Plot
 unique(data.plot.subset$Project.Plot)
+```
+These plots were chosen out of the total 20 plots because they were the only ones that had species identifications attached to samples, which was needed for our investigation of how defaunation affects species composition. 
 
+```{r}
 #subset columns/variables we want
 colnames(data.plot.subset)
 data.subset <- data.plot.subset %>%
@@ -95,7 +105,6 @@ colnames(data.subset)
 ```
 
 ```{r cleaning dataset & columns}
-
 #remove data we don't want to use or is missing
 data.subset <- data.subset %>%
   na.omit(DBH_mm)%>% #remove DBH with no values
@@ -277,13 +286,17 @@ str(clean.data)
 head(clean.data)
 ```
 
+
+\newpage
+
+# Exploratory Analysis 
+
+
 \newpage
 
 # Spatial Analysis
 
 ```{r creating map of Africa}
-
-Africa <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Africa/afr_g2014_2013_0.shp')
 
 #Determine coordinate reference system & explore columns
 st_crs(Africa)#WGS 84
@@ -305,9 +318,6 @@ mapview(Africa, col.regions = "mediumpurple3")+
 ```
 
 ```{r Detailed Map of Gabon with parks}
-#Parks sf
-Parks <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/National Parks/NP_PresRes.shp')
-
 st_crs(Parks) #Gtm_Gabon
 colnames(Parks)
 
@@ -325,26 +335,13 @@ mapview(Gabon, col.regions = "palegreen1")+
 ``` 
 
 ```{r Map of Ivindo with plots}
-
-#Rivers sf 
-Rivers <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Stream/GAB_hydro_lineaire_principal_2013/GAB_hydro_lineaire_principal_2013.shp')
-st_crs(Rivers)
-
-#Roads sf
-Roads <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Roads/GAB_major_roads_2013.shp')
-st_crs(Roads)
-  
-#Makokou village
-Makokou <- read_csv('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Makokou_Coordinates.csv')%>%
-  st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
-st_crs(Makokou)
-Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
-
-
-#Plots sf
-Plots <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Plots/Plots with species/plots_with_species.shp')
-
 #CRS
+st_crs(Rivers)
+st_crs(Roads)
+st_crs(Makokou)
+Makokou <- Makokou %>%
+  st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
+Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
 st_crs(Plots) #WGS 84
 colnames(Plots)
 
