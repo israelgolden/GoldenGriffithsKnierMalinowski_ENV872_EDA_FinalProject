@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output:
   pdf_document:
     keep_tex: yes
     fig_caption: yes
@@ -10,6 +10,7 @@ subtitle: "https://github.com/israelgolden/GoldenGriffithsKnierMalinowski_ENV872
 author: "Tashsa Griffiths, Israel Golden, Aubrey Knier, and Mishka Malinowski"
 fontsize: 12pt
 mainfont: Times New Roman
+always_allow_html: true
 
 ---
 
@@ -64,12 +65,38 @@ Plots <- st_read('./Data/Spatial Files/Gabon/Plots/Plots with species/plots_with
 
 # Dataset Information
 
-This dataset if provided by the Pouslen Tropical Ecology Lab here at Duke. 
-```{r dataset info}
+This dataset if provided by the Pouslen Tropical Ecology Lab here at Duke. yadda yadda...
+
+...briefly explain what the project is / what the data are...
+
+The dimensions and variable information of the raw dataset are below:
+```{r dataset info, echo=F, eval=T}
 dim(raw.data)
 ```
 
-# Data Cleaning & Wrangling
+Column name | Description | Unit | Range (if applicable)
+--------|----------------|--------|--------
+E | Field expedition season | Season-Year | Winter - Summer 2021
+Data_entry | Name of individual inputting data to Excel | Name | 
+Date..dd.mm.yyyy. | Date of Excel data entry | Date/Month/Year | March 2021 - November 2022 
+File_name | Photo file name of field data sheet | .JPG |
+Date..dd.mm.yyyy..1 | Data of field data collection | Date/Month/Year | June - January 2021
+Note_taker | Name of individual recording field data | Name |
+Project | Defaunated forest (DF) or intact forest (IF) plot | Category | DF or IF
+Plot | Unique plot identification | Category | 1A, 1B, 2A, 2B, 3A, 3B, 4A, 4B, 5A, 5B, 6A, 6B
+Grid | Within-plot grid where data were collected | Category | 
+TAG_SUM | The most unique identifier, using plot grid and plant tag | Category | 
+Plant_tag | Identifer assigned to each sample | Letter-Number Combination | 
+X_coord | X coordinate of sample location | Degrees | 0.00 - 9.80
+Y_coord | Y coordinate of sample location | Degrees | 0.00 - 8.75
+Tool | Tool used to measure diameter (DBH or caliper (CP)) | Category | DBH or CP
+POM | Point of measurement for diameter | Meters | 0.00 - 11.00
+DBH.mm | Diameter at breast height (DBH) | Millimeters | 0.00 - 173.00
+Height..meters. | Height of plant | Meters | 0.07 - 70.00
+Type_Field | Vegetation type or size class of plant | Category | Seedling, Sapling, Liana, Tree
+Note_Field | Miscellaneous field notes | Phrase | 
+ID | Latin species identification | Name | 
+Treatment | Future plot treatments (fungicide/insecticide)| Category | LMC, LME, MME, MMC
 
 With such a large dataset, data cleaning and wrangling was an essential process for creating a manageable dataset that was relevant for answering our research questions. First, we subset our selected six plots for our analysis:
 ```{r load and subset data, include=F}
@@ -87,24 +114,31 @@ data.plot.subset <- raw.data %>%
     filter(Project.Plot %in% c("DF_3B", "DF_5A", "DF_5B", "DF_6A", "DF_6B", "IF_2A"))
 ```
 
-```{r subset plot names, echo=F}
+```{r subset plot names, echo=F, eval=T}
 #check row names of Project.Plot
 unique(data.plot.subset$Project.Plot)
 ```
 These plots were chosen out of the total 20 plots because they were the only ones that had species identifications attached to samples, which was needed for our investigation of how defaunation affects species composition. 
 
-```{r}
+Next, we only selected columns that contained variables of interest:
+
+```{r, include=F}
 #subset columns/variables we want
 colnames(data.plot.subset)
 data.subset <- data.plot.subset %>%
   dplyr::select(Project.Plot, Plant_tag, DBH..mm., Height..meters., Type_Field, ID)
 
 colnames(data.subset) = c("Project.Plot", "Plant_tag", "DBH_mm", "Height_m", "Veg_Type", "ID")
-colnames(data.subset)
-
 ```
 
-```{r cleaning dataset & columns}
+```{r column/variables, echo=F, eval=T}
+colnames(data.subset)
+```
+
+
+We removed absent or unreasonable values from the dataset. This involved simply removing blank cells or "NAs", as well as measurements that were likely incorrect, probably as a result of improper unit conversions. Additionally, we improved uniformity in the dataset by removing samples that had a height less than 1.5m and lianas. This was because not all plots measured individuals smaller than 1.5m, and height measurements for lianas are less reliable, so we decided to only analyze trees. We also found strange instances in the data: some samples were relatively tall yet had very low DBHs (Figure __); this is probably due to some error in units. Therefore, we removed any samples that had a DBH less than 1mm and a height above 1.5m to improve accuracy.
+
+```{r cleaning dataset & columns, include=F}
 #remove data we don't want to use or is missing
 data.subset <- data.subset %>%
   na.omit(DBH_mm)%>% #remove DBH with no values
@@ -126,6 +160,9 @@ nrow(data.subset[data.subset$DBH_mm == 0.10,])
 which(data.subset$DBH_mm == 0.10)
 data.subset <- data.subset %>% 
   filter(DBH_mm > 1.0) # values below 1 were unreasonable for a height >1.5, most likely a unit error and the raw data will have to be examined and re-entered 
+```
+
+```{r plot of DBH vs height, echo=F, eval=T}
 
 #Plot to examine the relationship between DBH and Height
 ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
@@ -135,7 +172,9 @@ ggplot(data.subset, aes(x = DBH_mm, y = Height_m,
   ggtitle("DBH vs. Height Comparison")+ 
   geom_smooth()
 #clearly there are errors with data entry or collection
+```
 
+```{r, include=F}
 #Height 
 summary(data.subset$Height_m)
 
@@ -147,7 +186,16 @@ data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
 
 ```
 
-``` {r add new columns}
+We added in variables to support our research questions and analyses. We created two new columns: "Status" and "Distance_km"
+
+Column name | Description | Unit | Range
+---------|-------------|-------|-------
+Status | Indicates whether each plot is defaunated or intact forest | Category | Defaunated - Intact
+Distance_km | Distance of each plot from Mokokou | Kilometers | 8.177 - 40.224
+
+The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses.
+
+``` {r add new columns, include=F}
 #Add Status column - defaunated or intact forest
 data.subset <- data.subset %>% 
   mutate(Status = Project.Plot)
@@ -170,12 +218,23 @@ class(data.subset$Distance_km)
 
 #Overall summary 
 summary(data.subset)
-dim(data.subset)
-head(data.subset)
-
 ```
 
-```{r, species data cleaning}
+The new dimensions of this dataset are:
+
+```{r, dataset dimensions, echo=F, eval=T}
+dim(data.subset)
+```
+
+Our cleaned dataset looks as follows:
+
+```{r, head/columns, echo=F, eval=T}
+head(data.subset)
+```
+
+Accidental misspellings are common in datasets such as this with thousands of manual entries of complex Latin species names. This is a concern because two samples that are supposed to be the same species, but have different spellings, will not be identified as the same species in our analyses. By looking at a list of the unique species names in the dataset, we found this to be the case in several instances. Identifying these errors and correcting them was very labor intensive as this can only really be done with the human eye using personal judgment as to what names were meant to be the same. Before cleaning the species names, there were 349 "species"; after correcting for spelling mistakes, there were only 323 species. This means that 26 "species" were falsely identified prior to data cleaning.
+
+```{r, species data cleaning, include=F}
 
 #Species IDs
 sort(unique(data.subset$ID))
@@ -264,7 +323,7 @@ data.subset$ID[data.subset$ID %in% c("Chytranthus talboti")] <- "Chytranthus tal
 data.subset$ID[data.subset$ID %in% c("Agelaea paradoxa" )] <- "Agellae paradoxa" 
 ```
 
-```{r export & read in cleaned dataset}
+```{r export & read in cleaned dataset, include=F}
 write.csv(data.subset, row.names = FALSE, 
           file = "../Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv")
 
@@ -272,20 +331,10 @@ clean.data <- read.csv("./Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv",
                      stringsAsFactors = TRUE)
 ```
 
-```{explore cleaned data}
-#basic summaries of dataset
-class(clean.data)
-summary(clean.data)
-
-#dimensions of dataset
+The dimensions of the processed, clean dataset are as follows:
+```{r explore cleaned data, echo=F, eval=T}
 dim(clean.data)
-
-#to view dataset
-colnames(clean.data)
-str(clean.data)
-head(clean.data)
 ```
-
 
 \newpage
 
@@ -294,9 +343,9 @@ head(clean.data)
 
 \newpage
 
-# Spatial Analysis
+## Spatial Analysis
 
-```{r creating map of Africa}
+```{r creating map of Africa, include=F}
 
 #Determine coordinate reference system & explore columns
 st_crs(Africa)#WGS 84
@@ -306,7 +355,7 @@ colnames(Africa)
 mapView(Africa,zcol = "ADM0_NAME")
 ```
 
-```{r Map of Gabon}
+```{r Map of Gabon, include=F}
 #Making Gabon sf
 Gabon <- Africa %>%
   filter(ADM0_NAME == 'Gabon')
@@ -317,7 +366,7 @@ mapview(Africa, col.regions = "mediumpurple3")+
 
 ```
 
-```{r Detailed Map of Gabon with parks}
+```{r Detailed Map of Gabon with parks, include=F}
 st_crs(Parks) #Gtm_Gabon
 colnames(Parks)
 
@@ -334,7 +383,7 @@ mapview(Gabon, col.regions = "palegreen1")+
   mapview(Ivindo_NP, col.region = "darkgreen", lwd = 1.5, color = "black")
 ``` 
 
-```{r Map of Ivindo with plots}
+```{r Map of Ivindo with plots, include=F}
 #CRS
 st_crs(Rivers)
 st_crs(Roads)
@@ -354,10 +403,7 @@ mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.re
 
 ```
 
-
-# Analysis
-
-#DBH
+## DBH
 ```{r DBH graphs, echo=FALSE}
 
 #basic visualization
@@ -459,8 +505,11 @@ print(DBHstats)
 
 ```
 
-#GLMs
-```{r GLM data preparation}
+
+# Analysis
+
+##GLMs
+```{r GLM data preparation, include=F}
 # derive basal area from tree DBH in terms of square cm
 treedata <- mutate(clean.data, basal_area_cm = (((DBH_mm^2)*pi)/4)/100)
 
@@ -540,7 +589,7 @@ species_by_site_df$genus <- word(species_by_site_df$ID, 1)
 
 ```
 
-```{r GLM data visualization}
+```{r GLM data visualization, include=F}
 # What is the distribution of basal area in square cm for each tree by site?
 ggplot(treedata, aes(x = basal_area_cm, fill = Project.Plot)) + 
   geom_histogram(bins = 40) +
@@ -549,7 +598,7 @@ ggplot(treedata, aes(x = basal_area_cm, fill = Project.Plot)) +
   labs(title = "Basal area distribution of study plots")
 ```
 So it seems like most sites are pretty not uniform, and small trees are over-represented at each location. Let's compare sites to see which site has the most species.
-```{r}
+```{r, include=F}
 species_by_plot <- ggplot(data=SiteSummaries, aes(x=Project.Plot, y=total_species, fill = Project.Plot)) +
   geom_bar(stat="identity") +
   theme(legend.position="none")
@@ -564,7 +613,7 @@ plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_height
 ```
 So from this we can see that there are no great disparities between sites when it comes to species. At 146, DF_6B has the most species and at 96 DF_5B has the fewest species. Most sites have right around 100. We can also see how each site compares in terms of basal area - i.e., how densely forested each site is. IF_2A has the lowest basal area where DF_5A has the greatest at around 15 square meters per hectare. Given IF_2A's high species richness but low basal area, these data seem to suggest that IF_2A has many small trees but few large ones. Let's continue our exploration by seeing which genuses contribute the most to each site's basal area.
 
-```{r DF_3B}
+```{r DF_3B, include=F}
 # Genus basal area at each site
 #install.packages("treemapify")
 library(treemapify)
@@ -585,7 +634,7 @@ ggplot(DF_3B_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 ```
 
-```{r DF_5A}
+```{r DF_5A, include=F}
 #DF_5A
 DF_5A_basalarea$genus <- word(DF_5A_basalarea$ID, 1)
 DF_5A_genus_summary <- DF_5A_basalarea %>%
@@ -601,7 +650,7 @@ ggplot(DF_5A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 ```
 
-```{r DF_5B}
+```{r DF_5B, include=F}
 #DF_5B
 DF_5B_basalarea$genus <- word(DF_5B_basalarea$ID, 1)
 DF_5B_genus_summary <- DF_5B_basalarea %>%
@@ -617,7 +666,7 @@ ggplot(DF_5B_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 ```
 
-```{r DF_6A}
+```{r DF_6A, include=F}
 #DF_6A
 DF_6A_basalarea$genus <- word(DF_6A_basalarea$ID, 1)
 DF_6A_genus_summary <- DF_6A_basalarea %>%
@@ -633,7 +682,7 @@ ggplot(DF_6A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 ```
 
-```{r DF_6B}
+```{r DF_6B, include=F}
 # DF_6B
 DF_6B_basalarea$genus <- word(DF_6B_basalarea$ID, 1)
 DF_6B_genus_summary <- DF_6B_basalarea %>%
@@ -649,7 +698,7 @@ ggplot(DF_6B_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 ```
 
-```{r IF_2A}
+```{r IF_2A, include=F}
 IF_2A_basalarea$genus <- word(IF_2A_basalarea$ID, 1)
 IF_2A_genus_summary <- IF_2A_basalarea %>%
   group_by(genus) %>%
@@ -670,7 +719,7 @@ From these graphs we can see which genera make up the majority of basal area at 
 
 Let's begin to see if there is any relationship between basal area, species richness, and distance to towns (i.e., along the defaunation gradient)?.
 
-```{r}
+```{r, include=F}
 # Scatter plot of distance from town and basal area per acre
 ggplot(SiteSummaries, aes(x = Mean_dist, y = basal_area_per_ha, color = Project.Plot)) +
   geom_point() +
@@ -681,7 +730,7 @@ ggplot(SiteSummaries, aes(x = Mean_dist, y = basal_area_per_ha, color = Project.
 
 ```
 
-```{r}
+```{r, include=F}
 # What about species richness as it relates to distance from towns?
 # Scatter plot of distance from town and basal area per acre
 ggplot(SiteSummaries, aes(x = Mean_dist, y = total_species, color = Project.Plot)) +
@@ -695,7 +744,7 @@ ggplot(SiteSummaries, aes(x = Mean_dist, y = total_species, color = Project.Plot
 
 Looking at these graphs, it doesn't appear that there's much of an obvious relationship between basal area, species richness, and distance along the defaunation gradient. Still, looks can be deceiving. Let's feed these data into a linear model to see what relationships can be statistically proved. We begin by checking for correlations among variables with a corrplot. 
 
-```{r}
+```{r, include=F}
 library(corrplot)
 SiteSummaryNumbers <- 
   SiteSummaries %>%
@@ -706,7 +755,7 @@ corrplot(cor(SiteSummaryNumbers))
 
 from this it appears that basal area per hectare is negatively correlated with mean distance at the same time, there appears to be a weak positive correlation between total species and mean distance. Let's build a model and see how well these correlations predict basal area and species richness.
 
-```{r}
+```{r, include=F}
 # Linear model describing relationship between basal area per hectare as a function of total species and distance to town. 
 
 basal_area_lm <- lm(data = SiteSummaries, basal_area_per_ha ~ Mean_dist + total_species)
