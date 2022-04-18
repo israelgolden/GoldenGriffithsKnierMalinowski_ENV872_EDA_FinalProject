@@ -49,8 +49,6 @@ raw.data <- read.csv("./Data/Raw/Data_USE_ME.csv")
 # Load spatial files
 Africa <- st_read('./Data/Spatial Files/Africa/afr_g2014_2013_0.shp')
 Parks <- st_read('./Data/Spatial Files/Gabon/National Parks/NP_PresRes.shp')
-Rivers <- st_read('./Data/Spatial Files/Gabon/Stream/GAB_hydro_lineaire_principal_2013/GAB_hydro_lineaire_principal_2013.shp')
-Roads <- st_read('./Data/Spatial Files/Gabon/Roads/GAB_major_roads_2013.shp')
 Makokou <- read_csv('./Data/Spatial Files/Gabon/Makokou_Coordinates.csv')
 Plots <- st_read('./Data/Spatial Files/Gabon/Plots/Plots with species/plots_with_species.shp')
 
@@ -65,9 +63,22 @@ As defaunation continues to increase globally, there is little understanding of 
 
 ## **Research Questions** 
 
+**Overarching Research Question** 
+
+How does defaunation affect forest structure and composition in Ivindo National Park, Gabon? 
+
+*RQ1 & RQ2 - Forest Structure*
+Does average diameter at breast height (DBH) change along a defaunation gradient?
+
+Are there differences in Basal Area across a defaunation gradient?
 
 
+*RQ3 - Species Composition*
+Does species composition change along a defaunation gradient? 
 
+# Study Overview & Site 
+
+Gabon located in central western Africa provides an ideal study site for these research questions as the second most forested country in the world (Figure 1/Map 1?). Afrotropical forests extend throughout Gabon, known as one of the last strongholds in this ecosystem for several endemic species including the forest elephant *(Loxodonta cyclotis)*. Ivindo National Park, one of 14 national parks and presidential reserves in Gabon lies on the outskirts of several villages providing an excellent location to understand the interactions of hunting pressure within tropical forests (Figure 2/Map 2?). A previous study by Koerner et al. in 2016 in this area demonstrated the existence of a defaunation graident radiating away from the villages and into Ivindo national park. The results of the study showed that distance from villages could be used as a proxy for defuantion and that every 10 kilometers traveled away from villages mammal richness would increase by 1.5 species^5^. Therefore, in 2020 a project was started by the Poulsen Ecology Lab to establish forest plots along the defaunation gradient to further explore the relationship between forest structure and defaunation. Up to date, 10 sites with a paired-plot design have been established (plots, n = 20). Within the twenty 50 x 50m plots all trees above 1.5 meters in height have been tagged and measured, in six of these plots the trees have also been identified. Our analyses will focus on the complete data from this subset of 6 plots(Figure 3/Map 3?). Makokou, the largest town in this area also considered a regional capital, is indicated on the map to demonstrate hunting pressure and indicate that the most defaunated plots are those closest to Makokou while intact forests are farthest from Makokou. 
 
 \newpage
 
@@ -393,8 +404,6 @@ mapview(Gabon, col.regions = "palegreen1")+
 
 ```{r Map of Ivindo with plots, include=F}
 #CRS
-st_crs(Rivers)
-st_crs(Roads)
 st_crs(Makokou)
 Makokou <- Makokou %>%
   st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
