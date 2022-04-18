@@ -367,7 +367,7 @@ dim(clean.data)
 
 ## Spatial Analysis
 
-```{r creating map of Africa, include=F}
+```{r creating map of Africa}
 
 #Determine coordinate reference system & explore columns
 st_crs(Africa)#WGS 84
@@ -805,4 +805,13 @@ In this linear model we use species richness and distance from developed area to
 \newpage
 
 # References
-<add references here if relevant, otherwise delete this section> 
+
+1.	Kurten, E. L. Cascading effects of contemporaneous defaunation on tropical forest communities. Biol. Conserv. 163, 22–32 (2013).
+
+2.	Culot, L., Bello, C., Batista, J. L. F., do Couto, H. T. Z. & Galetti, M. Synergistic effects of seed disperser and predator loss on recruitment success and long-term consequences for carbon stocks in tropical rainforests. Sci. Rep. 7, 7662 (2017).
+
+3.	Beaune, D. et al. Seed dispersal strategies and the threat of defaunation in a Congo forest. Biodivers. Conserv. 22, 225–238 (2013).
+
+4.	Bello, C. et al. Defaunation affects carbon storage in tropical forests. Sci. Adv. 1, e1501105 (2015).
+
+5.	Koerner, S. E., Poulsen, J. R., Blanchard, E. J., Okouyi, J. & Clark, C. J. Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon. J. Appl. Ecol. 54, 805–814 (2017).
