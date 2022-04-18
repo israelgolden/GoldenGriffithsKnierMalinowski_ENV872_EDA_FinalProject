@@ -367,7 +367,7 @@ dim(clean.data)
 
 ## Spatial Analysis
 
-```{r creating map of Africa}
+```{r creating map of Africa, include = FALSE}
 
 #Determine coordinate reference system & explore columns
 st_crs(Africa)#WGS 84
@@ -377,7 +377,7 @@ colnames(Africa)
 mapView(Africa,zcol = "ADM0_NAME")
 ```
 
-```{r Map of Gabon, include=F}
+```{r Map of Gabon, echo=FALSE, fig.cap = "Map of Gabon"}
 #Making Gabon sf
 Gabon <- Africa %>%
   filter(ADM0_NAME == 'Gabon')
@@ -385,7 +385,6 @@ Gabon <- Africa %>%
 #Maping Gabon
 mapview(Africa, col.regions = "mediumpurple3")+ 
   mapview(Gabon, col.regions = "springgreen")
-
 ```
 
 ```{r Detailed Map of Gabon with parks, include=F}
@@ -801,6 +800,19 @@ In this linear model we use species richness and distance from developed area to
 
 # Summary and Conclusions
 
+Our data cleaning and analyses have provided an essential starting point to further explore the effects of defaunation on tropical forest structure and composition within Ivindo National Park Gabon. Although much of the results differ from our expected outcomes a key finding in this exploration has been uncovering errors in the dataset that may lead to faulty results or uninterpretable findings. We were able to address our *overarching research question* - "How does defaunation affect forest structure and composition in Ivindo National Park, Gabon?" although further data collection, checking, and analysis is necessary.
+
+*RQ1 & RQ2 - Forest Structure*
+Does average diameter at breast height (DBH) change along a defaunation gradient?
+
+Are there differences in Basal Area across a defaunation gradient?
+
+
+*RQ3 - Species Composition*
+Does species composition change along a defaunation gradient? 
+
+
+Overall, no specific trends were found between defaunation (using distance to village as a proxy for defaunation) and our forest structure and composition variables (DBH, basal area, and genus richness). In addition to the discrepencies in the DBH and height data another factor contributing to lack of significant results may be that amongst the 6 plots used in our analyses only one was considered intact forest. A greater dataset including the remaming plots along the gradient may help to draw more conclusions about these relationships and uncover any trends. There is currently a team of Gabonese researchers and colleagues from the Poulsen Lab conducting this work in Gabon. Re-analyses will be necessary once a completed dataset with all plots and all plant IDs is cleaned and available. Just as important as understanding defaunation implications for carbon sequestration in tropical forests is the need for good, reliable data to draw conclusions to advance policy and management. 
 
 \newpage
 
