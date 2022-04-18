@@ -188,10 +188,13 @@ ggplot(data.subset, aes(x = DBH_mm, y = Height_m,
                                                    color = Project.Plot))+
   geom_point()+
   xlab("DBH (mm)") + ylab("Height (m)")+ 
-  ggtitle("DBH vs. Height Comparison")+ 
+  ggtitle("Height vs. DBH Comparison")+ 
   geom_smooth()
 #clearly there are errors with data entry or collection
 ```
+
+Figure ___? shows that there are clearly errors in the data. The relationship between height and DBH should follow generally a positive linear trend especially in early life stages for a tree through seedling, sapling, juvenile, and early adult life stages. As trees mature they may slow their growth and reach an aysmptote or threshold for their height, but may continue to increase in diameter slowly. This trend is not shown for a large portion of the data. Of particular concern is the large spread of heights at small DBH values. It is unrealistic to believe that a 40m tree may have a DBH as small as 10mm. Therefore, it is likely that there is a high level of error within the dataset. This error may have occurred in 3 places. First, during data collection in the field the measurement may have been taken incorrectly. Secondly, the data may have been recorded incorrectly in the field or lastly when data was transferred from the paper data collection sheets into excel it may have been entered incorrectly. This is likely an issue of unit conversion and will ideally be resolved by checking the dataset against the raw data sheets. However, this peculiar relationship between height and DBH will impact the results of this analysis and may explain why many of the results do not fit with what was expected. 
+
 
 ```{r, include=F}
 #Height 
