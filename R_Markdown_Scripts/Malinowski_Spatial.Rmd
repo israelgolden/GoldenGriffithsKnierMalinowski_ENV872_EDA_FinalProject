@@ -97,15 +97,6 @@ ggplot() +
 
 
 ```{r Map of Ivindo with plots}
-
-#Rivers sf 
-Rivers <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Stream/GAB_hydro_lineaire_principal_2013/GAB_hydro_lineaire_principal_2013.shp')
-st_crs(Rivers)
-
-#Roads sf
-Roads <- st_read('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Roads/GAB_major_roads_2013.shp')
-st_crs(Roads)
-  
 #Makokou village
 Makokou <- read_csv('/Users/Dell Laptop/Documents/GitHub/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject/Data/Spatial Files/Gabon/Makokou_Coordinates.csv')%>%
   st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
@@ -138,10 +129,6 @@ guide = guide_legend(override.aes = list(shape = NA)))+
                      labels = c("Plots", "Makokou"),
                      guide = guide_legend(override.aes = list(linetype = c("blank"))))+
   ggtitle(label = "Forest Plots along a Defaunation Gradient", subtitle = "Ivindo National Park, Gabon")
-
-
-geom_sf(aes(fill=ACRES)) + 
-  scale_fill_continuous(type='viridis')
 
 ```
 
