@@ -2,12 +2,10 @@
 title: "Spatial Analysis"
 author: "Halina Malinowski"
 date: "4/10/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ###Set up! 
 
@@ -23,6 +21,8 @@ library(mapview)
 library(lubridate)
 library(RColorBrewer)
 library(raster)
+library(webshot)
+
 
 #Set theme
 mytheme <- theme_light(base_size = 12) +
@@ -42,6 +42,7 @@ colnames(Africa)
 
 #Map of Africa
 mapView(Africa,zcol = "ADM0_NAME")
+
 ```
 
 ```{r Map of Gabon}
@@ -52,6 +53,14 @@ Gabon <- Africa %>%
 #Maping Gabon
 mapview(Africa, col.regions = "mediumpurple3")+ 
   mapview(Gabon, col.regions = "springgreen")
+
+ggplot() +
+  geom_sf(data = Africa, aes(fill = "A"), color= 'black', alpha = 0.5, show.legend = "polygon", inherit.aes = F) + 
+  geom_sf(data = Gabon,aes(fill = "B"), color='darkgreen', alpha = 0.85, show.legend = "polygon", inherit.aes = F)+
+  scale_fill_manual(values = c("A" = "mediumpurple3", "B" = "palegreen3"),
+                    labels = c("Continental Africa", "Gabon"),
+                    name = "Legend")+
+  ggtitle(label = "Map of Africa with Gabon Indicated")
 
 ```
 
@@ -73,6 +82,16 @@ Ivindo_NP <- National_Parks %>%
 mapview(Gabon, col.regions = "palegreen1")+
   mapview(National_Parks, col.region = "palegreen3")+
   mapview(Ivindo_NP, col.region = "darkgreen", lwd = 1.5, color = "black")
+ 
+#Map with ggplot
+ggplot() +
+  geom_sf(data = Gabon, aes(fill = "A"), color='darkgreen', size = 0.6, alpha = 0.6, show.legend = "polygon", inherit.aes = F) +
+  geom_sf(data = National_Parks, aes(fill = "B"), color = 'palegreen3', alpha = 0.7, show.legend = "polygon", inherit.aes = F)+
+  geom_sf(data = Ivindo_NP, aes(fill = "C"), color='black', size=0.5, alpha = 0.7, show.legend = "polygon", inherit.aes = F) + 
+    scale_fill_manual(values = c("A" = "palegreen1", "B" = "palegreen3", "C" = "darkgreen"),
+                    labels = c("Gabon", "National Parks", "Ivindo National Park"), name = "Legend")+
+  ggtitle(label = "Gabon's National Parks")
+
 ``` 
 
 
@@ -105,8 +124,20 @@ colnames(Plots)
 mapviewPalette(name = "mapviewVectorColors")
 
 mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.regions = 0.5)+
-  mapview(Plots, zcol = "Plot_Name", col.region = c("magenta","red","orangered","orange","gold","yellow"), cex = 4, alpha.regions = 0.95)+
+  mapview(Plots, zcol = "Plot_Name", col.region = c("orangered","magenta","red","gold","orange","yellow"), cex = 4, alpha.regions = 0.70)+
   mapview(Makokou, col.region = "black", cex = 4, alpha.regions = 0.95)
+
+ggplot() +
+  geom_sf(data = Ivindo_NP, aes(fill = "A"), color='black', size = 0.5, alpha = 0.65, show.legend = "polygon", inherit.aes = F) +
+  geom_sf(data = Plots, aes(color = "B"), size = 1.5, alpha = 0.5, show.legend = "point", inherit.aes = F)+
+  geom_sf(data = Makokou, aes(color = "C"), size= 2, alpha = 0.7, show.legend = "point", inherit.aes = F) + 
+    scale_fill_manual(values = c("A" = "palegreen2"),
+                    labels = c("Ivindo National Park"), name = "Legend",
+guide = guide_legend(override.aes = list(shape = NA)))+
+  scale_color_manual(values = c("B" = "red", "C" = "black"), 
+                     labels = c("Plots", "Makokou"),
+                     guide = guide_legend(override.aes = list(linetype = c("blank"))))+
+  ggtitle(label = "Forest Plots along a Defaunation Gradient", subtitle = "Ivindo National Park, Gabon")
 
 ```
 
