@@ -524,11 +524,16 @@ print(DBHstats)
 
 ```
 
+<<<<<<< HEAD
+#LMs
+```{r LM data preparation}
+=======
 
 # Analysis
 
 ##GLMs
 ```{r GLM data preparation, include=F}
+>>>>>>> ec58e66acda2945c033624f59f03d5001b33098a
 # derive basal area from tree DBH in terms of square cm
 treedata <- mutate(clean.data, basal_area_cm = (((DBH_mm^2)*pi)/4)/100)
 
