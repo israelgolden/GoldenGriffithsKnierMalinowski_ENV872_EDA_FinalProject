@@ -46,28 +46,53 @@ Final Project -> Last names of all members_class_FinalProject
 
 ## Metadata
 
-All data can be found in the Data folder. 
+All data can be found in the Data folder. Raw data is found in the Raw folder within the Data folder and contains a dataset with 21 columns and 45,681 rows. Each row represents a sample or a tree that was measured within the forest plots. Below is a table that described the columns within the dataset:
 
-#AUBREY please fix/double check and input tables. 
-Raw data is found in the Raw folder within the Data folder and contains a dataset with 21 columns and 45,681 rows. Each row represents a sample or a tree that was measured within the forest plots. Below is a table that described the columns within the dataset:
 
-#BIG TABLE
+Column Name         | Description                             | Unit                | Class
+--------------------|-----------------------------------------|---------------------|--------------
+E                   | Field expedition season                 | Season-Year         | Nominal
+Data_entry          | Name of person inputting data to Excel  | Name                | Nominal
+Date..dd.mm.yyyy.   | Date of Excel data entry                | Date/Month/Year     | Date
+File_name           | Photo file name of field data sheet     | .JPG                | Nominal
+Date..dd.mm.yyyy..1 | Date of field data collection           | Date/Month/Year     | Date
+Note_taker          | Name of individual recording field data | Name                | Nominal
+Project             | Forest type (defaunated/intact forest)  | Category            | Nominal
+Plot                | Unique plot identification              | Category            | Nominal
+Grid                | Within-plot grid                        | Category            | Nominal
+TAG_SUM             | The most unique sample identifier       | Plot-Grid combo     | Nominal
+Plant_tag           | Identifer assigned to each sample       | Letter-Number combo | Nominal
+X_coord             | X coordinate of sample location         | Meters              | Continuous
+Y_coord             | Y coordinate of sample location         | Meters              | Continuous
+Tool                | Tool used to measure diameter           | Category            | Nominal
+POM                 | Point of measurement for diameter       | Meters              | Continuous
+DBH.mm              | Diameter at breast height (DBH)         | Millimeters         | Continuous
+Height..meters.     | Height of plant                         | Meters              | Continuous
+Type_Field          | Vegetation type or size class of plant  | Category            | Nominal
+Note_Field          | Miscellaneous field notes               | Phrase              | Nominal
+ID                  | Latin species identification            | Name                | Nominal
+Treatment           | Plot treatments (fungicide/insecticide) | Category            | Nominal
 
-Processed data is stored in the processed folder within the data folder and was created from wrangling the raw dataset and contains 6,340 rows and 7 columns. A description of the columns is below: 
 
-#SMALL Table 
+Processed data is stored in the processed folder within the data folder and was created from wrangling the raw dataset and creating variables. It contains 6,340 rows and 7 columns. A description of the columns is below: 
 
-Spatial data used to create maps of the study site are found in the spatial folder within the data folder. Spatial files are then broken up into more folders - Gabon Country Mask (shapefile of Gabon), National Parks (shapefile of Gabon National Parks), and Plots (shapefile of the forest plots). Additinoally there is a csv file labeled Makokou_Coordinates.csv which gives the latitude and longitude of Makokou the closest large town to Ivindo National Park. 
+Column Name         | Description                             | Unit                | Class
+--------------------|-----------------------------------------|---------------------|--------------
+Project_Plot        | Combo of project and plot ID            | Category            | Nominal
+DBH.mm              | Diameter at breast height (DBH)         | Millimeters         | Continuous
+Height..meters.     | Height of plant                         | Meters              | Continuous
+Veg_Field           | Vegetation type or size class of plant  | Category            | Nominal
+ID                  | Latin species identification            | Name                | Nominal
+Status              | Indicates defaunated/intact             | Name                | Nominal
+Distance_km         | Calculated distance for Makokou         | Kilometers          | Continuous
 
-Column Name | Description | Class of Data | Units
+Spatial data used to create maps of the study site are found in the spatial folder within the data folder. Spatial files are then broken up into more folders - Gabon Country Mask (shapefile of Gabon), National Parks (shapefile of Gabon National Parks), and Plots (shapefile of the forest plots). Additionally there is a csv file labeled Makokou_Coordinates.csv which gives the latitude and longitude of Makokou the closest large town to Ivindo National Park. 
+
+Column Name | Description | Class         | Units
 ------------|-------------|---------------|-------
-City        | Name of city|   nominal     | N/A
+City        | Name of city| nominal       | N/A
 Longitude   | coordinates | continuous    | degrees
 Latitude    | coordinates | continuous    | degrees
-
-
-#WE NEED TO DELETE THIS LINE IT WAS JUST FOR GUIDANCE 
-<For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
 ## Scripts and code
 

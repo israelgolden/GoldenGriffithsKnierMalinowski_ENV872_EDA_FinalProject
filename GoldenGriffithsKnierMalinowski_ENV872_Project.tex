@@ -61,7 +61,6 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
-\usepackage{float}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -142,8 +141,8 @@ top-down driven by the global economy, government regulations and
 incentives, access to income and livelihoods,and ultimately quality of
 life.
 
-\hypertarget{study-overview-site}{%
-\section{Study Overview \& Site}\label{study-overview-site}}
+\hypertarget{study-overview-and-site}{%
+\section{Study Overview and Site}\label{study-overview-and-site}}
 
 Gabon, the second most forested country in the world, is located in
 central western Africa and provides an ideal study site for
@@ -198,10 +197,12 @@ therefore the points indicating the plots overlap on the below map
 Park, Gabon}
 \end{figure}
 
+\newpage
+
 \hypertarget{research-questions}{%
 \section{Research Questions}\label{research-questions}}
 
-\textbf{Overarching Research Question} How does defaunation affect
+\textbf{Overarching Research Question:} How does defaunation affect
 forest structure and composition in Ivindo National Park, Gabon?
 
 \begin{itemize}
@@ -216,6 +217,8 @@ forest structure and composition in Ivindo National Park, Gabon?
   \emph{Research Question 3:} Does species composition change along a
   defaunation gradient?
 \end{itemize}
+
+\newpage
 
 \hypertarget{data}{%
 \section{Data}\label{data}}
@@ -232,7 +235,7 @@ below:
 ## [1] 45681    21
 \end{verbatim}
 
-\begin{table}
+\begin{table}[H]
 
 \caption{\label{tab:unnamed-chunk-1}Raw Dataset Information}
 \centering
@@ -286,6 +289,8 @@ Treatment & Future plot treatments (fungicide/insecticide) & Category & LMC, LME
 \end{tabular}}
 \end{table}
 
+\newpage
+
 \hypertarget{data-cleaning}{%
 \subsection{Data cleaning}\label{data-cleaning}}
 
@@ -324,13 +329,13 @@ less than 1mm and a height above 1.5m to improve accuracy.
 
 We also added in variables to support our research questions and
 analyses. We created two new columns: ``Status'' referring to defaunated
-or intact study plots and ``Distance\_km'' from Makokou. The categorical
-variable, ``Status'', will help with data visualization, and the
-``Distance\_km'' variable will be used as a proxy from the defaunation
-gradient in our analyses. A sample of our cleaned dataset is shown in
-Table 3.
+or intact study plots and ``Distance\_km'' from Makokou (Table 2). The
+categorical variable, ``Status'', will help with data visualization, and
+the ``Distance\_km'' variable will be used as a proxy from the
+defaunation gradient in our analyses. A sample of our cleaned dataset is
+shown in Table 3.
 
-\begin{table}
+\begin{table}[H]
 
 \caption{\label{tab:unnamed-chunk-4}Added Variables to Dataset}
 \centering
@@ -346,7 +351,7 @@ Distance\_km & Distance of each plot from Mokokou & Kilometers & 8.177 - 40.224\
 \end{tabular}}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
 
 \caption{\label{tab:head/columns}Head of Cleaned Dataset}
 \centering
@@ -544,7 +549,7 @@ but low basal area, these results seem to suggest that IF\_2A has many
 small trees, but few large ones. Overall, there does not appear to be a
 strong relationship between number of tree species and basal area.
 
-\begin{figure}[H]
+\begin{figure}
 \includegraphics[width=0.95\linewidth]{./GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure6} \caption{Species Richness and Basal Area by Plot}\label{fig:unnamed-chunk-9}
 \end{figure}
 
@@ -580,6 +585,8 @@ observable trends that dictated these changes.
 \includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/unnamed-chunk-11-1.pdf}
 \caption{IF\_2A Tree Plot}
 \end{figure}
+
+\newpage
 
 \hypertarget{research-question-synthesis-1}{%
 \subsection{Research Question

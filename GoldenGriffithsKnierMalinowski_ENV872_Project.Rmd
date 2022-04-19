@@ -11,8 +11,7 @@ author: "Tasha Griffiths, Israel Golden, Aubrey Knier, and Mishka Malinowski"
 fontsize: 12pt
 mainfont: Times New Roman
 always_allow_html: true
-header-includes:
- \usepackage{float}
+
 
 ---
 
@@ -70,16 +69,13 @@ added.rows.table <- read.csv('./Data/added_rows.csv')
 
 ```
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.pos = 'H')
-```
 # **Background and Rationale**
 
 Tropical forests throughout the world are experiencing changes in forest structure and ecosystem services due to increasing hunting pressure, resulting in plummeting animal populations^1^. This phenomenon, known as defaunation, has cascading effects throughout ecosystems due to the disruption of intricate plant-animal interactions that are responsible for shaping tropical forests^1^. Plant-animal interactions such as seed dispersal, seed predation, seedling trampling, herbivory, and nutrient translocation are necessary to shape forests. Through positive interactions such as the distribution of seeds and nutrients and antagonistic interactions such as herbivory and trampling - resulting in the opening up of the understory, plant-animal interactions create opportunities for a variety of species to succeed in the forest and increase plant diversity, richness, and ecosystem services^2^. For example,95% of the trees in the Afrotropical forests of LuiKotale in the Congo Basin depend on animals for dispersal, demonstrating the necessity of plant-animal interactions in these systems^3^. The alteration or loss of faunal communities in tropical forests has led to "Empty Forest Syndrome", where a forest appears to be intact, but the animal community is so depleted or non-existent that the forest no longer functions as it did. These changes result in alterations to ecosystem services, like carbon storage^4^. 
 
 As defaunation continues to increase globally, there is little understanding of the long-term effects of defaunation on tropical forest diversity and ecosystem services. Tropical forests are responsible for sequestering ~40% of the world's aboveground carbon^4^. Therefore, the impact of defaunation on tropical forests may have detrimental effects for global carbon storage and climate change projections. Further research is necessary to understand the intricate interactions between defaunation, tropical forests, and ecosystem services to illuminate these relationships and advocate for policy changes and resource management. However, it is essential to highlight that the underlying causes of defaunation are top-down driven by the global economy, government regulations and incentives, access to income and livelihoods,and ultimately quality of life. 
 
-# Study Overview & Site 
+# Study Overview and Site 
 
 Gabon, the second most forested country in the world, is located in central western Africa and provides an ideal study site for understanding the effects of defaunation on tropical forests (Figure 1).  The Afrotropical forests extending throughout Gabon are one of the last strongholds for several endemic species including the forest elephant *(Loxodonta cyclotis)*. Ivindo National Park, one of 14 national parks and presidential reserves, lies on the outskirts of several villages and provides an excellent location to understand the interactions of hunting pressure within tropical forests (Figure 2). A study by Koerner et al. in 2016 in this area described the existence of a defaunation gradient radiating away from the villages and into Ivindo national park. The results of the study showed that distance from villages could be used as a proxy for defauntion and that every 10 kilometers traveled away from villages mammal richness would increase by 1.5 species^5^. 
 
@@ -184,14 +180,17 @@ guide = guide_legend(override.aes = list(shape = NA)))+
 
 ```
 
+\newpage
+
 # Research Questions
-**Overarching Research Question**
+**Overarching Research Question:**
 How does defaunation affect forest structure and composition in Ivindo National Park, Gabon? 
 
 * _Research Question 1:_ Does Diameter at Breast Height (DBH) change along a defaunation gradient?
 * _Research Question 2:_ Are there differences in Basal Area across a defaunation gradient?
 * _Research Question 3:_ Does species composition change along a defaunation gradient?
 
+\newpage
 
 # Data
 
@@ -204,8 +203,11 @@ dim(raw.data)
 
 ```{r, echo=F, eval=T}
 kable(raw.data.table, caption="Raw Dataset Information") %>% 
-  kable_styling(latex_options="scale_down")
+  kable_styling(latex_options="scale_down") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
+
+\newpage
 
 ## Data cleaning
 
@@ -285,11 +287,12 @@ data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
 
 ```
 
-We also added in variables to support our research questions and analyses. We created two new columns: "Status" referring to defaunated or intact study plots and "Distance_km" from Makokou. The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses. A sample of our cleaned dataset is shown in Table 3.
+We also added in variables to support our research questions and analyses. We created two new columns: "Status" referring to defaunated or intact study plots and "Distance_km" from Makokou (Table 2). The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses. A sample of our cleaned dataset is shown in Table 3.
 
 ```{r, echo=F, eval=T}
 kable(added.rows.table, caption="Added Variables to Dataset") %>% 
-  kable_styling(latex_options="scale_down")
+  kable_styling(latex_options="scale_down") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 ``` {r add new columns, include=F}
@@ -320,7 +323,8 @@ summary(data.subset)
 
 ```{r, head/columns, echo=F, eval=T}
 kable(head(data.subset), caption="Head of Cleaned Dataset")  %>% 
-  kable_styling(latex_options="scale_down")
+  kable_styling(latex_options="scale_down") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 Accidental misspellings are common in datasets such as this with thousands of manual entries of complex Latin species names. This is a concern because two samples that are supposed to be the same species, but have different spellings, will not be identified as the same species in our analyses. By looking at a list of the unique species names in the dataset, we found this to be the case in several instances. Identifying these errors and correcting them was quite labor intensive and can only be completed with the human eye and personal judgment as to what names are meant to be the same. Before cleaning the species names, there were 349 "species"; after correcting for spelling mistakes, there were only 323 species. This means that 26 "species" were falsely identified prior to data cleaning.
@@ -691,7 +695,7 @@ Results of this exploratory analysis reveal differences in basal area and specie
 
 fig6_plot <- plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
 
-#we tried to use fig.cap for fig6_plot, but it wouldn't recognize it as a figure, so we had to read it in as a .png. sorry!
+#we tried to use fig.cap for fig6_plot, but it wouldn't recognize it as a figure since we were using plot_grid, so we had to read it in as a .png. sorry!
 knitr::include_graphics("./GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure6.png")
 
 ```
@@ -806,6 +810,8 @@ ggplot(IF_2A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
   scale_fill_viridis_c(option = "turbo")
 
 ```
+
+\newpage
 
 ## Research Question Synthesis
 
