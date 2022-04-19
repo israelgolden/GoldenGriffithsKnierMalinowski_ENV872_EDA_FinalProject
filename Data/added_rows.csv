@@ -1,0 +1,3 @@
+Variable,Description,Unit,Range
+Status,Indicates whether each plot is defaunated or intact forest,Category ,Defaunated - Intact
+Distance_km ,Distance of each plot from Mokokou,Kilometers ,8.177 - 40.224

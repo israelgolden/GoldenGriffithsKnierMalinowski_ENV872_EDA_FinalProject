@@ -40,6 +40,9 @@ library(sf)
 library(leaflet)
 library(mapview)
 library(webshot)
+library(treemapify)
+library(knitr)
+library(viridis)
 
 
 # Set your ggplot theme
@@ -56,6 +59,10 @@ Africa <- st_read('./Data/Spatial Files/Africa/afr_g2014_2013_0.shp')
 Parks <- st_read('./Data/Spatial Files/Gabon/National Parks/NP_PresRes.shp')
 Makokou <- read_csv('./Data/Spatial Files/Gabon/Makokou_Coordinates.csv')
 Plots <- st_read('./Data/Spatial Files/Gabon/Plots/Plots with species/plots_with_species.shp')
+
+#tables
+raw.data.table <- read.csv('./Data/dataset_info.csv')
+added.rows.table <- read.csv('./Data/added_rows.csv')
 
 ```
 
@@ -85,6 +92,104 @@ Does species composition change along a defaunation gradient?
 
 Gabon located in central western Africa provides an ideal study site for these research questions as the second most forested country in the world (Figure 1/Map 1?). Afrotropical forests extend throughout Gabon, known as one of the last strongholds in this ecosystem for several endemic species including the forest elephant *(Loxodonta cyclotis)*. Ivindo National Park, one of 14 national parks and presidential reserves in Gabon lies on the outskirts of several villages providing an excellent location to understand the interactions of hunting pressure within tropical forests (Figure 2/Map 2?). A previous study by Koerner et al. in 2016 in this area demonstrated the existence of a defaunation graident radiating away from the villages and into Ivindo national park. The results of the study showed that distance from villages could be used as a proxy for defuantion and that every 10 kilometers traveled away from villages mammal richness would increase by 1.5 species^5^. Therefore, in 2020 a project was started by the Poulsen Ecology Lab to establish forest plots along the defaunation gradient to further explore the relationship between forest structure and defaunation. Up to date, 10 sites with a paired-plot design have been established (plots, n = 20). Within the twenty 50 x 50m plots all trees above 1.5 meters in height have been tagged and measured, in six of these plots the trees have also been identified. Our analyses will focus on the complete data from this subset of 6 plots(Figure 3/Map 3?). Makokou, the largest town in this area also considered a regional capital, is indicated on the map to demonstrate hunting pressure and indicate that the most defaunated plots are those closest to Makokou while intact forests are farthest from Makokou. 
 
+
+```{r creating map of Africa, include=F}
+
+#Determine coordinate reference system & explore columns
+st_crs(Africa)#WGS 84
+colnames(Africa)
+
+#Map of Africa
+mapView(Africa,zcol = "ADM0_NAME")
+
+```
+
+```{r Map of Gabon, fig.cap="Map of Africa with Gabon Indicated", echo=F, eval=T}
+#Making Gabon sf
+Gabon <- Africa %>%
+  filter(ADM0_NAME == 'Gabon')
+
+#Maping Gabon
+#mapview(Africa, col.regions = "mediumpurple3")+ 
+  #mapview(Gabon, col.regions = "springgreen")
+
+ggplot() +
+  geom_sf(data = Africa, aes(fill = "A"), color= 'black', alpha = 0.5, show.legend = "polygon", inherit.aes = F) + 
+  geom_sf(data = Gabon,aes(fill = "B"), color='darkgreen', alpha = 0.85, show.legend = "polygon", inherit.aes = F)+
+  scale_fill_manual(values = c("A" = "mediumpurple3", "B" = "palegreen3"),
+                    labels = c("Continental Africa", "Gabon"),
+                    name = "Legend")
+
+```
+
+```{r set up Detailed Map of Gabon with parks, include=F}
+st_crs(Parks) #Gtm_Gabon
+colnames(Parks)
+
+#change crs to WGS 84
+National_Parks <- st_transform(Parks, "+proj=longlat +datum=WGS84")
+st_crs(National_Parks)
+
+#Getting Ivindo National Park by itself
+Ivindo_NP <- National_Parks %>%
+  filter(NOM == "IVINDO")
+
+mapview(Gabon, col.regions = "palegreen1")+
+  mapview(National_Parks, col.region = "palegreen3")+
+  mapview(Ivindo_NP, col.region = "darkgreen", lwd = 1.5, color = "black")
+
+``` 
+
+```{r Detailed Map of Gabon with parks, fig.cap="Gabon's National Parks", echo=F, eval=T}
+
+#Map with ggplot
+ggplot() +
+  geom_sf(data = Gabon, aes(fill = "A"), color='darkgreen', size = 0.6, alpha = 0.6, show.legend = "polygon", inherit.aes = F) +
+  geom_sf(data = National_Parks, aes(fill = "B"), color = 'palegreen3', alpha = 0.7, show.legend = "polygon", inherit.aes = F)+
+  geom_sf(data = Ivindo_NP, aes(fill = "C"), color='black', size=0.5, alpha = 0.7, show.legend = "polygon", inherit.aes = F) + 
+    scale_fill_manual(values = c("A" = "palegreen1", "B" = "palegreen3", "C" = "darkgreen"),
+                    labels = c("Gabon", "National Parks", "Ivindo National Park"), name = "Legend")
+
+``` 
+
+```{r set up Map of Ivindo with plots, include=F}
+
+st_crs(Makokou)
+Makokou <- Makokou %>%
+  st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
+Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
+st_crs(Plots) #WGS 84
+colnames(Plots)
+Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
+
+#CRS
+st_crs(Plots) #WGS 84
+colnames(Plots)
+
+#Map Gabon with Parks and Plots
+mapviewPalette(name = "mapviewVectorColors")
+
+mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.regions = 0.5)+
+  mapview(Plots, zcol = "Plot_Name", col.region = c("orangered","magenta","red","gold","orange","yellow"), cex = 4, alpha.regions = 0.70)+
+  mapview(Makokou, col.region = "black", cex = 4, alpha.regions = 0.95)
+
+```
+
+```{r Map of Ivindo with plots, fig.cap="Forest Plots along a Defaunation Gradient in Ivindo National Park, Gabon", echo=F, eval=T}
+
+ggplot() +
+  geom_sf(data = Ivindo_NP, aes(fill = "A"), color='black', size = 0.5, alpha = 0.65, show.legend = "polygon", inherit.aes = F) +
+  geom_sf(data = Plots, aes(color = "B"), size = 1.5, alpha = 0.5, show.legend = "point", inherit.aes = F)+
+  geom_sf(data = Makokou, aes(color = "C"), size= 2, alpha = 0.7, show.legend = "point", inherit.aes = F) + 
+    scale_fill_manual(values = c("A" = "palegreen2"),
+                    labels = c("Ivindo National Park"), name = "Legend",
+guide = guide_legend(override.aes = list(shape = NA)))+
+  scale_color_manual(values = c("B" = "red", "C" = "black"), 
+                     labels = c("Plots", "Makokou"),
+                     guide = guide_legend(override.aes = list(linetype = c("blank"))))
+
+```
+
 \newpage
 
 # Dataset Information
@@ -94,29 +199,9 @@ This dataset is provided by the Pouslen Tropical Ecology Lab here at Duke. The d
 dim(raw.data)
 ```
 
-Column name | Description | Unit | Range (if applicable)
---------|----------------|--------|--------
-E | Field expedition season | Season-Year | Winter - Summer 2021
-Data_entry | Name of individual inputting data to Excel | Name | 
-Date..dd.mm.yyyy. | Date of Excel data entry | Date/Month/Year | March 2021 - November 2022 
-File_name | Photo file name of field data sheet | .JPG |
-Date..dd.mm.yyyy..1 | Data of field data collection | Date/Month/Year | June - January 2021
-Note_taker | Name of individual recording field data | Name |
-Project | Defaunated forest (DF) or intact forest (IF) plot | Category | DF or IF
-Plot | Unique plot identification | Category | 1A, 1B, 2A, 2B, 3A, 3B, 4A, 4B, 5A, 5B, 6A, 6B
-Grid | Within-plot grid where data were collected | Category | 
-TAG_SUM | The most unique identifier, using plot grid and plant tag | Category | 
-Plant_tag | Identifer assigned to each sample | Letter-Number Combination | 
-X_coord | X coordinate of sample location | Degrees | 0.00 - 9.80
-Y_coord | Y coordinate of sample location | Degrees | 0.00 - 8.75
-Tool | Tool used to measure diameter (DBH or caliper (CP)) | Category | DBH or CP
-POM | Point of measurement for diameter | Meters | 0.00 - 11.00
-DBH.mm | Diameter at breast height (DBH) | Millimeters | 0.00 - 173.00
-Height..meters. | Height of plant | Meters | 0.07 - 70.00
-Type_Field | Vegetation type or size class of plant | Category | Seedling, Sapling, Liana, Tree
-Note_Field | Miscellaneous field notes | Phrase | 
-ID | Latin species identification | Name | 
-Treatment | Future plot treatments (fungicide/insecticide)| Category | LMC, LME, MME, MMC
+```{r, echo=F, eval=T}
+kable(raw.data.table, caption="Raw Dataset Information")
+```
 
 With such a large dataset, data cleaning and wrangling was an essential process for creating a manageable dataset that was relevant for answering our research questions. First, we subset our selected six plots for our analysis:
 ```{r load and subset data, include=F}
@@ -182,14 +267,13 @@ data.subset <- data.subset %>%
   filter(DBH_mm > 1.0) # values below 1 were unreasonable for a height >1.5, most likely a unit error and the raw data will have to be examined and re-entered 
 ```
 
-```{r plot of DBH vs height, echo=F, eval=T}
+```{r plot of DBH vs height, fig.cap="Height vs. DBH Comparison", echo=F, eval=T, message=F, warning=F}
 
 #Plot to examine the relationship between DBH and Height
 ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
                                                    color = Project.Plot))+
   geom_point()+
-  xlab("DBH (mm)") + ylab("Height (m)")+ 
-  ggtitle("Height vs. DBH Comparison")+ 
+  xlab("DBH (mm)") + ylab("Height (m)") + 
   geom_smooth()
 #clearly there are errors with data entry or collection
 ```
@@ -211,10 +295,9 @@ data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
 
 We added in variables to support our research questions and analyses. We created two new columns: "Status" and "Distance_km"
 
-Column name | Description | Unit | Range
----------|-------------|-------|-------
-Status | Indicates whether each plot is defaunated or intact forest | Category | Defaunated - Intact
-Distance_km | Distance of each plot from Mokokou | Kilometers | 8.177 - 40.224
+```{r, echo=F, eval=T}
+kable(added.rows.table, caption="Added Variables to Dataset")
+```
 
 The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses.
 
@@ -252,7 +335,7 @@ dim(data.subset)
 Our cleaned dataset looks as follows:
 
 ```{r, head/columns, echo=F, eval=T}
-head(data.subset)
+kable(head(data.subset), caption="Cleaned Dataset")
 ```
 
 Accidental misspellings are common in datasets such as this with thousands of manual entries of complex Latin species names. This is a concern because two samples that are supposed to be the same species, but have different spellings, will not be identified as the same species in our analyses. By looking at a list of the unique species names in the dataset, we found this to be the case in several instances. Identifying these errors and correcting them was very labor intensive as this can only really be done with the human eye using personal judgment as to what names were meant to be the same. Before cleaning the species names, there were 349 "species"; after correcting for spelling mistakes, there were only 323 species. This means that 26 "species" were falsely identified prior to data cleaning.
@@ -363,113 +446,8 @@ dim(clean.data)
 
 # Exploratory Analysis 
 
-
-\newpage
-
-## Spatial Exploration
-
-```{r creating map of Africa, include=F}
-
-#Determine coordinate reference system & explore columns
-st_crs(Africa)#WGS 84
-colnames(Africa)
-
-#Map of Africa
-mapView(Africa,zcol = "ADM0_NAME")
-
-```
-
-```{r Map of Gabon, echo=F, eval=T}
-#Making Gabon sf
-Gabon <- Africa %>%
-  filter(ADM0_NAME == 'Gabon')
-
-#Maping Gabon
-#mapview(Africa, col.regions = "mediumpurple3")+ 
-  #mapview(Gabon, col.regions = "springgreen")
-
-ggplot() +
-  geom_sf(data = Africa, aes(fill = "A"), color= 'black', alpha = 0.5, show.legend = "polygon", inherit.aes = F) + 
-  geom_sf(data = Gabon,aes(fill = "B"), color='darkgreen', alpha = 0.85, show.legend = "polygon", inherit.aes = F)+
-  scale_fill_manual(values = c("A" = "mediumpurple3", "B" = "palegreen3"),
-                    labels = c("Continental Africa", "Gabon"),
-                    name = "Legend")+
-  ggtitle(label = "Map of Africa with Gabon Indicated")
-
-```
-
-```{r set up Detailed Map of Gabon with parks, include=F}
-st_crs(Parks) #Gtm_Gabon
-colnames(Parks)
-
-#change crs to WGS 84
-National_Parks <- st_transform(Parks, "+proj=longlat +datum=WGS84")
-st_crs(National_Parks)
-
-#Getting Ivindo National Park by itself
-Ivindo_NP <- National_Parks %>%
-  filter(NOM == "IVINDO")
-
-mapview(Gabon, col.regions = "palegreen1")+
-  mapview(National_Parks, col.region = "palegreen3")+
-  mapview(Ivindo_NP, col.region = "darkgreen", lwd = 1.5, color = "black")
-
-``` 
-
-```{r Detailed Map of Gabon with parks, echo=F, eval=T}
-
-#Map with ggplot
-ggplot() +
-  geom_sf(data = Gabon, aes(fill = "A"), color='darkgreen', size = 0.6, alpha = 0.6, show.legend = "polygon", inherit.aes = F) +
-  geom_sf(data = National_Parks, aes(fill = "B"), color = 'palegreen3', alpha = 0.7, show.legend = "polygon", inherit.aes = F)+
-  geom_sf(data = Ivindo_NP, aes(fill = "C"), color='black', size=0.5, alpha = 0.7, show.legend = "polygon", inherit.aes = F) + 
-    scale_fill_manual(values = c("A" = "palegreen1", "B" = "palegreen3", "C" = "darkgreen"),
-                    labels = c("Gabon", "National Parks", "Ivindo National Park"), name = "Legend")+
-  ggtitle(label = "Gabon's National Parks")
-
-``` 
-
-```{r set up Map of Ivindo with plots, include=F}
-
-st_crs(Makokou)
-Makokou <- Makokou %>%
-  st_as_sf(coords = c('Longitude', 'Latitude'), crs = "+proj=longlat +datum=WGS84")
-Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
-st_crs(Plots) #WGS 84
-colnames(Plots)
-Makokou_WGS84 <- st_transform(Makokou, "+proj=longlat +datum=WGS84")
-
-#CRS
-st_crs(Plots) #WGS 84
-colnames(Plots)
-
-#Map Gabon with Parks and Plots
-mapviewPalette(name = "mapviewVectorColors")
-
-mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.regions = 0.5)+
-  mapview(Plots, zcol = "Plot_Name", col.region = c("orangered","magenta","red","gold","orange","yellow"), cex = 4, alpha.regions = 0.70)+
-  mapview(Makokou, col.region = "black", cex = 4, alpha.regions = 0.95)
-
-```
-
-```{r Map of Ivindo with plots, echo=F, eval=T}
-
-ggplot() +
-  geom_sf(data = Ivindo_NP, aes(fill = "A"), color='black', size = 0.5, alpha = 0.65, show.legend = "polygon", inherit.aes = F) +
-  geom_sf(data = Plots, aes(color = "B"), size = 1.5, alpha = 0.5, show.legend = "point", inherit.aes = F)+
-  geom_sf(data = Makokou, aes(color = "C"), size= 2, alpha = 0.7, show.legend = "point", inherit.aes = F) + 
-    scale_fill_manual(values = c("A" = "palegreen2"),
-                    labels = c("Ivindo National Park"), name = "Legend",
-guide = guide_legend(override.aes = list(shape = NA)))+
-  scale_color_manual(values = c("B" = "red", "C" = "black"), 
-                     labels = c("Plots", "Makokou"),
-                     guide = guide_legend(override.aes = list(linetype = c("blank"))))+
-  ggtitle(label = "Forest Plots along a Defaunation Gradient", subtitle = "Ivindo National Park, Gabon")
-
-```
-
 ## DBH
-```{r DBH graphs, echo=FALSE}
+```{r DBH graphs, include=F}
 
 #basic visualization
 DBHbyplot <- ggplot(clean.data, 
@@ -552,9 +530,13 @@ allsitesordered_limitedx <- ggplot(transform(clean.data,
   geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + 
   facet_wrap(vars(Project.Plot)) + xlim(0,150) +
   xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+```
+
+```{r, fig.cap="DBH per Site", echo=F, eval=T, message=F, warning=F}
 print(allsitesordered_limitedx)
+```
 
-
+```{r, include=F}
 #otherways to determine differences in DBH per site
 summary(DF_5A_Data$DBH_mm)
 summary (IF_2A_Data$DBH_mm)
@@ -564,10 +546,11 @@ DBHstats <- ggplot(clean.data,
                     aes(x = DBH_mm, color = Project.Plot)) +
   geom_bar() + xlim(0, 500) +
   xlab("DBH") + ylab( "Frequency")
+
+```
+
+```{r, fig.cap="DBH Across Sites", echo=F, eval=T, message=F, warning=F}
 print(DBHstats)
-
-
-
 ```
 
 <<<<<<< HEAD
@@ -659,6 +642,7 @@ species_by_site_df$genus <- word(species_by_site_df$ID, 1)
 
 ```{r GLM data visualization, include=F}
 # What is the distribution of basal area in square cm for each tree by site?
+
 ggplot(treedata, aes(x = basal_area_cm, fill = Project.Plot)) + 
   geom_histogram(bins = 40) +
   xlim(0,50) +
@@ -676,15 +660,16 @@ basal_area_by_plot <- ggplot(data=SiteSummaries, aes(x=Project.Plot, y=total_bas
   theme(legend.position="none")
 
 library(cowplot)
-plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
+```
 
+```{r, fig.cap="Species Richness & Basal Area by Plot", echo=F, eval=T, message=F, warning=F}
+plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
 ```
 So from this we can see that there are no great disparities between sites when it comes to species. At 146, DF_6B has the most species and at 96 DF_5B has the fewest species. Most sites have right around 100. We can also see how each site compares in terms of basal area - i.e., how densely forested each site is. IF_2A has the lowest basal area where DF_5A has the greatest at around 15 square meters per hectare. Given IF_2A's high species richness but low basal area, these data seem to suggest that IF_2A has many small trees but few large ones. Let's continue our exploration by seeing which genuses contribute the most to each site's basal area.
 
 ```{r DF_3B, include=F}
 # Genus basal area at each site
 #install.packages("treemapify")
-library(treemapify)
 
 # start by creating a new data frame with basal area summaries by genus (basal are in square meters per hectare)
 DF_3B_basalarea$genus <- word(DF_3B_basalarea$ID, 1)
@@ -740,14 +725,16 @@ DF_6A_basalarea$genus <- word(DF_6A_basalarea$ID, 1)
 DF_6A_genus_summary <- DF_6A_basalarea %>%
   group_by(genus) %>%
   summarise(genus_basal_area = sum(species_basal_area))
+```
 
+```{r, fig.cap="DF_6A Tree Plot", echo=F, eval=T, message=F, warning=F}
 ggplot(DF_6A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area, label = genus)) +
   geom_treemap() +
   geom_treemap_text(colour = "white",
                     place = "centre",
                     size = 15,
                     grow = TRUE) +
-  scale_fill_viridis_c(option = "turbo")
+  scale_fill_viridis(option="turbo")
 ```
 
 ```{r DF_6B, include=F}
@@ -771,6 +758,9 @@ IF_2A_basalarea$genus <- word(IF_2A_basalarea$ID, 1)
 IF_2A_genus_summary <- IF_2A_basalarea %>%
   group_by(genus) %>%
   summarise(genus_basal_area = sum(species_basal_area))
+```
+
+```{r, fig.cap="IF_2A Tree Plot", echo=F, eval=T, message=F, warning=F}
 
 ggplot(IF_2A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area, label = genus)) +
   geom_treemap() +
@@ -787,11 +777,11 @@ From these graphs we can see which genera make up the majority of basal area at 
 
 Let's begin to see if there is any relationship between basal area, species richness, and distance to towns (i.e., along the defaunation gradient)?.
 
-```{r, include=F}
+```{r, fig.cap="Basal Area and Distance to Developed Area", echo=F, eval=T, message=F, warning=F}
 # Scatter plot of distance from town and basal area per acre
 ggplot(SiteSummaries, aes(x = Mean_dist, y = basal_area_per_ha, color = Project.Plot)) +
   geom_point() +
-  labs(title = "Basal area and distance to developed area") + 
+  labs(title = "") + 
        ylab('Mean Basal Area per hectare') +
        xlab("Distance from developed area (km)") +
   geom_smooth(method=lm, se=FALSE, col='red', size=0.5)
@@ -801,6 +791,7 @@ ggplot(SiteSummaries, aes(x = Mean_dist, y = basal_area_per_ha, color = Project.
 ```{r, include=F}
 # What about species richness as it relates to distance from towns?
 # Scatter plot of distance from town and basal area per acre
+
 ggplot(SiteSummaries, aes(x = Mean_dist, y = total_species, color = Project.Plot)) +
   geom_point() +
   labs(title = "Species richness and distance to developed area") + 
@@ -822,6 +813,8 @@ corrplot(cor(SiteSummaryNumbers))
 
 
 from this it appears that basal area per hectare is negatively correlated with mean distance at the same time, there appears to be a weak positive correlation between total species and mean distance. Let's build a model and see how well these correlations predict basal area and species richness.
+
+# Analysis 
 
 ```{r, include=F}
 # Linear model describing relationship between basal area per hectare as a function of total species and distance to town. 

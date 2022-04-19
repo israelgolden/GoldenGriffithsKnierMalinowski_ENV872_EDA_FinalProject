@@ -1,0 +1,22 @@
+Variable,Description,Unit,Range
+E ,Field expedition season,Season-Year,Winter - Summer 2021
+Data_entry,Name of individual inputting data to Excel,Name ,
+Date..dd.mm.yyyy.,Date of Excel data entry,Date/Month/Year,March 2021 - November 2022
+File_name,Photo file name of field data sheet,.JPG,
+Date..dd.mm.yyyy..1,Data of field data collection,Data of field data collection,June - January 2021
+Note_taker ,Name of individual recording field data,Name,
+Project,Defaunated forest (DF) or intact forest (IF) plot,Category ,DF or IF
+Plot ,Unique plot identification,Category,1-6 A-B
+Grid,Within-plot grid where data were collected ,Category ,
+TAG_SUM ,"The most unique identifier, using plot grid and plant tag",Category,
+Plant_tag ,Identifer assigned to each sample,Letter-Number Combination,
+X_coord,X coordinate of sample location,Degrees,0.00 - 9.80
+Y_coord,Y coordinate of sample location,Degrees,0.00 - 8.75
+Tool,Tool used to measure diameter,Category,DBH or CP
+POM,Point of measurement for diameter,Meters,0.00 - 11.00
+DBH.mm,Diameter at breast height (DBH),Millimeters,0.00 - 173.00
+Height..meters.,Height of plant,Meters,0.07 - 70.00
+Type_Field,Vegetation type or size class of plant,Category,"Seedling, Sapling, Liana, Tree"
+Note_Field ,Miscellaneous field notes,Phrase ,
+ID,Latin species identification,Name,
+Treatment ,Future plot treatments (fungicide/insecticide),Category,"LMC, LME, MME, MMC"
