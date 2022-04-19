@@ -73,13 +73,14 @@ ID                  | Latin species identification            | Name            
 Treatment           | Plot treatments (fungicide/insecticide) | Category            | Nominal
 
 
-Processed data is stored in the processed folder within the data folder and was created from wrangling the raw dataset and creating variables. It contains 6,340 rows and 7 columns. A description of the columns is below: 
+Processed data is stored in the processed folder within the data folder and was created from wrangling the raw dataset and creating variables. It contains 6,279 rows and 8 columns. A description of the columns is below: 
 
 Column Name         | Description                             | Unit                | Class
 --------------------|-----------------------------------------|---------------------|--------------
 Project_Plot        | Combo of project and plot ID            | Category            | Nominal
 DBH.mm              | Diameter at breast height (DBH)         | Millimeters         | Continuous
 Height..meters.     | Height of plant                         | Meters              | Continuous
+Plant_tag           | Identifer assigned to each sample       | Letter-Number combo | Nominal
 Veg_Field           | Vegetation type or size class of plant  | Category            | Nominal
 ID                  | Latin species identification            | Name                | Nominal
 Status              | Indicates defaunated/intact             | Name                | Nominal

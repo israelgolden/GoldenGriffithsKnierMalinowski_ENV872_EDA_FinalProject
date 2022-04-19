@@ -318,6 +318,7 @@ class(data.subset$Distance_km)
 
 #Overall summary 
 summary(data.subset)
+dim(data.subset)
 ```
 
 
@@ -419,11 +420,17 @@ data.subset$ID[data.subset$ID %in% c("Agelaea paradoxa" )] <- "Agellae paradoxa"
 ```
 
 ```{r export & read in cleaned dataset, include=F}
-write.csv(data.subset, row.names = FALSE, 
-          file = "../Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv")
+write.csv(data.subset, 
+          file = "./Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv")
 
 clean.data <- read.csv("./Data/Processed/Cleaned_Gabon_Forest_Plot_Data.csv", 
                      stringsAsFactors = TRUE)
+
+colnames(clean.data)
+
+clean.data <- clean.data %>%
+  dplyr::select(-X)
+
 ```
 
 The dimensions of the processed, clean dataset are as follows:
