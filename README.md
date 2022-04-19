@@ -25,7 +25,6 @@ Data in the repository was collected from the Poulsen Ecology Lab. The data repr
 *Folder structure* -> Data (Processed, Raw, Spatial)
                    -> R_Markdown_Scripts
                    -> GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject
-                   -> Documents (Final Project Output)
                    -> Scratch (misc. things)
 
 *File formats* 
