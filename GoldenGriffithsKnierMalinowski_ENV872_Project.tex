@@ -95,20 +95,103 @@ National Park, Gabon}
 \newpage
 
 \hypertarget{rationale-and-research-questions}{%
-\section{Rationale and Research
-Questions}\label{rationale-and-research-questions}}
+\section{\texorpdfstring{\textbf{Rationale and Research
+Questions}}{Rationale and Research Questions}}\label{rationale-and-research-questions}}
+
+Tropical forests throughout the world are experiencing changes in forest
+structure and ecosystem services due to increasing hunting pressure,
+resulting in plummeting animal populations\textsuperscript{1}. This
+phenomenon known as defaunation has cascading effects throughout
+ecosystems due to the disruption of intricate plant-animal interactions
+that are responsible for shaping tropical forests\textsuperscript{1}.
+Plant-animal interactions such as seed dispersal, seed predation,
+trampling, herbivory, and nutrient translocation are necessary to shape
+forests. Through positive interactions such as the distribution of seeds
+and nutrients and antagonistic interactions such as herbivory and
+trampling - resulting in the opening up of the understory, plant-animal
+interactions create opportunities for a variety of species to succeed in
+the forest and increase plant diversity, richness, and ecosystem
+services\textsuperscript{2}. For example, in the Afrotropical forests of
+LuiKotale in the Congo Basin, 95\% of the trees in this area depend on
+animals for dispersal demonstrating the necessity of plant-animal
+interactions in these systems\textsuperscript{3}. The alteration or loss
+of faunal communities in tropical forests has led to ``Empty Forest
+Syndrome'', where a forest appears to be intact, but the animal
+community is so depleated or non-existent that the forest no longer
+functions as it did resulting in changes in ecosystem services, such as
+carbon storage\textsuperscript{4}.
+
+As defaunation continues to increase globally, there is little
+understanding of the long-term effects of defaunation on tropical forest
+diversity, ecosystem services and specifically carbon storage
+capabilities. Tropcial forests are responsible for sequestering
+\textasciitilde40\% of the world's aboveground
+carbon\textsuperscript{4}. Therefore, the effects of defaunation on
+tropical forests may have detrimental effects for global carbon storage
+and climate change projections. Further research is necessary to
+understand the intricate interactions between defaunation, tropical
+forests, and ecosystem services to illuminate these relationships and
+advocate for policy changes and resource management. However, it is
+essential to highlight that the underlying causes of defaunation are
+top-down driven by the global economy, government regulations and
+incentives, access to income and livelihoods,and ultimately quality of
+life.
+
+\hypertarget{research-questions}{%
+\subsection{\texorpdfstring{\textbf{Research
+Questions}}{Research Questions}}\label{research-questions}}
+
+\textbf{Overarching Research Question}
+
+How does defaunation affect forest structure and composition in Ivindo
+National Park, Gabon?
+
+\emph{RQ1 \& RQ2 - Forest Structure} Does average diameter at breast
+height (DBH) change along a defaunation gradient?
+
+Are there differences in Basal Area across a defaunation gradient?
+
+\emph{RQ3 - Species Composition} Does species composition change along a
+defaunation gradient?
+
+\hypertarget{study-overview-site}{%
+\section{Study Overview \& Site}\label{study-overview-site}}
+
+Gabon located in central western Africa provides an ideal study site for
+these research questions as the second most forested country in the
+world (Figure 1/Map 1?). Afrotropical forests extend throughout Gabon,
+known as one of the last strongholds in this ecosystem for several
+endemic species including the forest elephant \emph{(Loxodonta
+cyclotis)}. Ivindo National Park, one of 14 national parks and
+presidential reserves in Gabon lies on the outskirts of several villages
+providing an excellent location to understand the interactions of
+hunting pressure within tropical forests (Figure 2/Map 2?). A previous
+study by Koerner et al.~in 2016 in this area demonstrated the existence
+of a defaunation graident radiating away from the villages and into
+Ivindo national park. The results of the study showed that distance from
+villages could be used as a proxy for defuantion and that every 10
+kilometers traveled away from villages mammal richness would increase by
+1.5 species\textsuperscript{5}. Therefore, in 2020 a project was started
+by the Poulsen Ecology Lab to establish forest plots along the
+defaunation gradient to further explore the relationship between forest
+structure and defaunation. Up to date, 10 sites with a paired-plot
+design have been established (plots, n = 20). Within the twenty 50 x 50m
+plots all trees above 1.5 meters in height have been tagged and
+measured, in six of these plots the trees have also been identified. Our
+analyses will focus on the complete data from this subset of 6
+plots(Figure 3/Map 3?). Makokou, the largest town in this area also
+considered a regional capital, is indicated on the map to demonstrate
+hunting pressure and indicate that the most defaunated plots are those
+closest to Makokou while intact forests are farthest from Makokou.
 
 \newpage
 
 \hypertarget{dataset-information}{%
 \section{Dataset Information}\label{dataset-information}}
 
-This dataset if provided by the Pouslen Tropical Ecology Lab here at
-Duke. yadda yadda\ldots{}
-
-\ldots briefly explain what the project is / what the data are\ldots{}
-
-The dimensions and variable information of the raw dataset are below:
+This dataset is provided by the Pouslen Tropical Ecology Lab here at
+Duke. The dimensions and variable information of the raw dataset are
+below:
 
 \begin{verbatim}
 ## [1] 45681    21
@@ -358,6 +441,26 @@ DBH less than 1mm and a height above 1.5m to improve accuracy.
 
 \includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/plot of DBH vs height-1.pdf}
 
+Figure \_\_\_? shows that there are clearly errors in the data. The
+relationship between height and DBH should follow generally a positive
+linear trend especially in early life stages for a tree through
+seedling, sapling, juvenile, and early adult life stages. As trees
+mature they may slow their growth and reach an aysmptote or threshold
+for their height, but may continue to increase in diameter slowly. This
+trend is not shown for a large portion of the data. Of particular
+concern is the large spread of heights at small DBH values. It is
+unrealistic to believe that a 40m tree may have a DBH as small as 10mm.
+Therefore, it is likely that there is a high level of error within the
+dataset. This error may have occurred in 3 places. First, during data
+collection in the field the measurement may have been taken incorrectly.
+Secondly, the data may have been recorded incorrectly in the field or
+lastly when data was transferred from the paper data collection sheets
+into excel it may have been entered incorrectly. This is likely an issue
+of unit conversion and will ideally be resolved by checking the dataset
+against the raw data sheets. However, this peculiar relationship between
+height and DBH will impact the results of this analysis and may explain
+why many of the results do not fit with what was expected.
+
 We added in variables to support our research questions and analyses. We
 created two new columns: ``Status'' and ``Distance\_km''
 
@@ -450,8 +553,14 @@ The dimensions of the processed, clean dataset are as follows:
 
 \newpage
 
-\hypertarget{spatial-analysis}{%
-\subsection{Spatial Analysis}\label{spatial-analysis}}
+\hypertarget{spatial-exploration}{%
+\subsection{Spatial Exploration}\label{spatial-exploration}}
+
+\includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/Map of Gabon-1.pdf}
+
+\includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/Detailed Map of Gabon with parks-1.pdf}
+
+\includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/Map of Ivindo with plots-1.pdf}
 
 \hypertarget{dbh}{%
 \subsection{DBH}\label{dbh}}
@@ -543,10 +652,8 @@ The dimensions of the processed, clean dataset are as follows:
 
 \includegraphics{GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure-latex/DBH graphs-10.pdf}
 
-\hypertarget{analysis}{%
-\section{Analysis}\label{analysis}}
-
-\#\#GLMs
+\textless\textless\textless\textless\textless\textless\textless{} HEAD
+\#LMs
 
 So it seems like most sites are pretty not uniform, and small trees are
 over-represented at each location. Let's compare sites to see which site
@@ -615,12 +722,67 @@ needed\textgreater{}}\label{question-1-insert-specific-question-here-and-add-add
 \hypertarget{summary-and-conclusions}{%
 \section{Summary and Conclusions}\label{summary-and-conclusions}}
 
+Our data cleaning and analyses have provided an essential starting point
+to further explore the effects of defaunation on tropical forest
+structure and composition within Ivindo National Park Gabon. Although
+much of the results differ from our expected outcomes a key finding in
+this exploration has been uncovering errors in the dataset that may lead
+to faulty results or uninterpretable findings. We were able to address
+our \emph{overarching research question} - ``How does defaunation affect
+forest structure and composition in Ivindo National Park, Gabon?''
+although further data collection, checking, and analysis is necessary.
+
+\emph{RQ1 \& RQ2 - Forest Structure} Does average diameter at breast
+height (DBH) change along a defaunation gradient?
+
+Are there differences in Basal Area across a defaunation gradient?
+
+\emph{RQ3 - Species Composition} Does species composition change along a
+defaunation gradient?
+
+Overall, no specific trends were found between defaunation (using
+distance to village as a proxy for defaunation) and our forest structure
+and composition variables (DBH, basal area, and genus richness). In
+addition to the discrepencies in the DBH and height data another factor
+contributing to lack of significant results may be that amongst the 6
+plots used in our analyses only one was considered intact forest. A
+greater dataset including the remaming plots along the gradient may help
+to draw more conclusions about these relationships and uncover any
+trends. There is currently a team of Gabonese researchers and colleagues
+from the Poulsen Lab conducting this work in Gabon. Re-analyses will be
+necessary once a completed dataset with all plots and all plant IDs is
+cleaned and available. Just as important as understanding defaunation
+implications for carbon sequestration in tropical forests is the need
+for good, reliable data to draw conclusions to advance policy and
+management.
+
 \newpage
 
 \hypertarget{references}{%
 \section{References}\label{references}}
 
-\textless add references here if relevant, otherwise delete this
-section\textgreater{}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Kurten, E. L. Cascading effects of contemporaneous defaunation on
+  tropical forest communities. Biol. Conserv. 163, 22--32 (2013).
+\item
+  Culot, L., Bello, C., Batista, J. L. F., do Couto, H. T. Z. \&
+  Galetti, M. Synergistic effects of seed disperser and predator loss on
+  recruitment success and long-term consequences for carbon stocks in
+  tropical rainforests. Sci. Rep.~7, 7662 (2017).
+\item
+  Beaune, D. et al.~Seed dispersal strategies and the threat of
+  defaunation in a Congo forest. Biodivers. Conserv. 22, 225--238
+  (2013).
+\item
+  Bello, C. et al.~Defaunation affects carbon storage in tropical
+  forests. Sci. Adv. 1, e1501105 (2015).
+\item
+  Koerner, S. E., Poulsen, J. R., Blanchard, E. J., Okouyi, J. \& Clark,
+  C. J. Vertebrate community composition and diversity declines along a
+  defaunation gradient radiating from rural villages in Gabon. J. Appl.
+  Ecol. 54, 805--814 (2017).
+\end{enumerate}
 
 \end{document}
