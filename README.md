@@ -16,7 +16,7 @@ defaunation, species composition, gradients, forest structure, basal area, DBH, 
 
 ## Database Information
 
-<data in the repository was collected from XXXX.> 
+Data in the repository was collected from the Poulsen Ecology Lab. The data represent forest measurement data from 20 forest plots along a defaunation gradient in Ivindo National Park, Gabon. Data collection began in late 2020 and is still continuing at present.    
 
 
 ## Folder structure, file formats, and naming conventions 
