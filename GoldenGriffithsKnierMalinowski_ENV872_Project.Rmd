@@ -7,10 +7,12 @@ output:
 geometry: margin=2.54cm
 title: "Effects of a Defaunation Gradient on Tropical Forest Structure in Ivindo National Park, Gabon"
 subtitle: "https://github.com/israelgolden/GoldenGriffithsKnierMalinowski_ENV872_EDA_FinalProject"
-author: "Tashsa Griffiths, Israel Golden, Aubrey Knier, and Mishka Malinowski"
+author: "Tasha Griffiths, Israel Golden, Aubrey Knier, and Mishka Malinowski"
 fontsize: 12pt
 mainfont: Times New Roman
 always_allow_html: true
+header-includes:
+ \usepackage{float}
 
 ---
 
@@ -42,7 +44,9 @@ library(mapview)
 library(webshot)
 library(treemapify)
 library(knitr)
-library(viridis)
+library(kableExtra)
+library(stringr)
+library(cowplot)
 
 
 # Set your ggplot theme
@@ -66,31 +70,20 @@ added.rows.table <- read.csv('./Data/added_rows.csv')
 
 ```
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.pos = 'H')
+```
+# **Background and Rationale**
 
-# **Rationale and Research Questions**
+Tropical forests throughout the world are experiencing changes in forest structure and ecosystem services due to increasing hunting pressure, resulting in plummeting animal populations^1^. This phenomenon, known as defaunation, has cascading effects throughout ecosystems due to the disruption of intricate plant-animal interactions that are responsible for shaping tropical forests^1^. Plant-animal interactions such as seed dispersal, seed predation, seedling trampling, herbivory, and nutrient translocation are necessary to shape forests. Through positive interactions such as the distribution of seeds and nutrients and antagonistic interactions such as herbivory and trampling - resulting in the opening up of the understory, plant-animal interactions create opportunities for a variety of species to succeed in the forest and increase plant diversity, richness, and ecosystem services^2^. For example,95% of the trees in the Afrotropical forests of LuiKotale in the Congo Basin depend on animals for dispersal, demonstrating the necessity of plant-animal interactions in these systems^3^. The alteration or loss of faunal communities in tropical forests has led to "Empty Forest Syndrome", where a forest appears to be intact, but the animal community is so depleted or non-existent that the forest no longer functions as it did. These changes result in alterations to ecosystem services, like carbon storage^4^. 
 
-Tropical forests throughout the world are experiencing changes in forest structure and ecosystem services due to increasing hunting pressure, resulting in plummeting animal populations^1^. This phenomenon known as defaunation has cascading effects throughout ecosystems due to the disruption of intricate plant-animal interactions that are responsible for shaping tropical forests^1^. Plant-animal interactions such as seed dispersal, seed predation, trampling, herbivory, and nutrient translocation are necessary to shape forests. Through positive interactions such as the distribution of seeds and nutrients and antagonistic interactions such as herbivory and trampling - resulting in the opening up of the understory, plant-animal interactions create opportunities for a variety of species to succeed in the forest and increase plant diversity, richness, and ecosystem services^2^. For example, in the Afrotropical forests of LuiKotale in the Congo Basin, 95% of the trees in this area depend on animals for dispersal demonstrating the necessity of plant-animal interactions in these systems^3^. The alteration or loss of faunal communities in tropical forests has led to "Empty Forest Syndrome", where a forest appears to be intact, but the animal community is so depleated or non-existent that the forest no longer functions as it did resulting in changes in ecosystem services, such as carbon storage^4^. 
-
-As defaunation continues to increase globally, there is little understanding of the long-term effects of defaunation on tropical forest diversity, ecosystem services and specifically carbon storage capabilities. Tropcial forests are responsible for sequestering ~40% of the world's aboveground carbon^4^. Therefore, the effects of defaunation on tropical forests may have detrimental effects for global carbon storage and climate change projections. Further research is necessary to understand the intricate interactions between defaunation, tropical forests, and ecosystem services to illuminate these relationships and advocate for policy changes and resource management. However, it is essential to highlight that the underlying causes of defaunation are top-down driven by the global economy, government regulations and incentives, access to income and livelihoods,and ultimately quality of life. 
-
-## **Research Questions** 
-
-**Overarching Research Question** 
-
-How does defaunation affect forest structure and composition in Ivindo National Park, Gabon? 
-
-*RQ1 & RQ2 - Forest Structure*
-Does average diameter at breast height (DBH) change along a defaunation gradient?
-
-Are there differences in Basal Area across a defaunation gradient?
-
-
-*RQ3 - Species Composition*
-Does species composition change along a defaunation gradient? 
+As defaunation continues to increase globally, there is little understanding of the long-term effects of defaunation on tropical forest diversity and ecosystem services. Tropical forests are responsible for sequestering ~40% of the world's aboveground carbon^4^. Therefore, the impact of defaunation on tropical forests may have detrimental effects for global carbon storage and climate change projections. Further research is necessary to understand the intricate interactions between defaunation, tropical forests, and ecosystem services to illuminate these relationships and advocate for policy changes and resource management. However, it is essential to highlight that the underlying causes of defaunation are top-down driven by the global economy, government regulations and incentives, access to income and livelihoods,and ultimately quality of life. 
 
 # Study Overview & Site 
 
-Gabon located in central western Africa provides an ideal study site for these research questions as the second most forested country in the world (Figure 1/Map 1?). Afrotropical forests extend throughout Gabon, known as one of the last strongholds in this ecosystem for several endemic species including the forest elephant *(Loxodonta cyclotis)*. Ivindo National Park, one of 14 national parks and presidential reserves in Gabon lies on the outskirts of several villages providing an excellent location to understand the interactions of hunting pressure within tropical forests (Figure 2/Map 2?). A previous study by Koerner et al. in 2016 in this area demonstrated the existence of a defaunation graident radiating away from the villages and into Ivindo national park. The results of the study showed that distance from villages could be used as a proxy for defuantion and that every 10 kilometers traveled away from villages mammal richness would increase by 1.5 species^5^. Therefore, in 2020 a project was started by the Poulsen Ecology Lab to establish forest plots along the defaunation gradient to further explore the relationship between forest structure and defaunation. Up to date, 10 sites with a paired-plot design have been established (plots, n = 20). Within the twenty 50 x 50m plots all trees above 1.5 meters in height have been tagged and measured, in six of these plots the trees have also been identified. Our analyses will focus on the complete data from this subset of 6 plots(Figure 3/Map 3?). Makokou, the largest town in this area also considered a regional capital, is indicated on the map to demonstrate hunting pressure and indicate that the most defaunated plots are those closest to Makokou while intact forests are farthest from Makokou. 
+Gabon, the second most forested country in the world, is located in central western Africa and provides an ideal study site for understanding the effects of defaunation on tropical forests (Figure 1).  The Afrotropical forests extending throughout Gabon are one of the last strongholds for several endemic species including the forest elephant *(Loxodonta cyclotis)*. Ivindo National Park, one of 14 national parks and presidential reserves, lies on the outskirts of several villages and provides an excellent location to understand the interactions of hunting pressure within tropical forests (Figure 2). A study by Koerner et al. in 2016 in this area described the existence of a defaunation gradient radiating away from the villages and into Ivindo national park. The results of the study showed that distance from villages could be used as a proxy for defauntion and that every 10 kilometers traveled away from villages mammal richness would increase by 1.5 species^5^. 
+
+In 2020 a project was started by the Poulsen Ecology Lab to establish forest plots along the defaunation gradient to further explore the relationship between forest structure and defaunation. As of 2022, 10 sites with a paired-plot design have been established (plots, n = 20). Within the twenty 50 x 50m plots, all trees above 1.5 meters in height have been tagged and measured. In six of these plots, tree species have also been identified. Our analyses will focus on the complete data from this subset of six plots(Figure 3). Makokou, the largest town in this area also considered a regional capital, is indicated on the map to demonstrate hunting pressure and indicate that the most defaunated plots are those closest to Makokou while intact forests are farthest from Makokou (Figure 3). Due to the scale of the map it appears there are only 4 plots instead of 6, this is because of the paired - plot design at the sites. Our dataset includes the paired plots DF 5A & DF 5B and DF 6A & DF 6B. These pairs of plots are only separated by 100m, therefore the points indicating the plots overlap on the below map (Figure 3). 
 
 
 ```{r creating map of Africa, include=F}
@@ -177,6 +170,7 @@ mapview(Ivindo_NP, col.region = "palegreen2", lwd = 1, color = "black", alpha.re
 
 ```{r Map of Ivindo with plots, fig.cap="Forest Plots along a Defaunation Gradient in Ivindo National Park, Gabon", echo=F, eval=T}
 
+
 ggplot() +
   geom_sf(data = Ivindo_NP, aes(fill = "A"), color='black', size = 0.5, alpha = 0.65, show.legend = "polygon", inherit.aes = F) +
   geom_sf(data = Plots, aes(color = "B"), size = 1.5, alpha = 0.5, show.legend = "point", inherit.aes = F)+
@@ -190,18 +184,30 @@ guide = guide_legend(override.aes = list(shape = NA)))+
 
 ```
 
-\newpage
+# Research Questions
+**Overarching Research Question**
+How does defaunation affect forest structure and composition in Ivindo National Park, Gabon? 
 
-# Dataset Information
+* _Research Question 1:_ Does Diameter at Breast Height (DBH) change along a defaunation gradient?
+* _Research Question 2:_ Are there differences in Basal Area across a defaunation gradient?
+* _Research Question 3:_ Does species composition change along a defaunation gradient?
 
-This dataset is provided by the Pouslen Tropical Ecology Lab here at Duke. The dimensions and variable information of the raw dataset are below:
+
+# Data
+
+## Dataset Information
+
+This dataset is provided by the Pouslen Tropical Ecology Lab here at Duke. A summary of the variables, variable descriptions, units, and ranges are found in Table 1. The dimensions of the raw dataset are below:
 ```{r dataset info, echo=F, eval=T}
 dim(raw.data)
 ```
 
 ```{r, echo=F, eval=T}
-kable(raw.data.table, caption="Raw Dataset Information")
+kable(raw.data.table, caption="Raw Dataset Information") %>% 
+  kable_styling(latex_options="scale_down")
 ```
+
+## Data cleaning
 
 With such a large dataset, data cleaning and wrangling was an essential process for creating a manageable dataset that was relevant for answering our research questions. First, we subset our selected six plots for our analysis:
 ```{r load and subset data, include=F}
@@ -241,7 +247,7 @@ colnames(data.subset)
 ```
 
 
-We removed absent or unreasonable values from the dataset. This involved simply removing blank cells or "NAs", as well as measurements that were likely incorrect, probably as a result of improper unit conversions. Additionally, we improved uniformity in the dataset by removing samples that had a height less than 1.5m and lianas. This was because not all plots measured individuals smaller than 1.5m, and height measurements for lianas are less reliable, so we decided to only analyze trees. We also found strange instances in the data: some samples were relatively tall yet had very low DBHs (Figure __); this is probably due to some error in units. Therefore, we removed any samples that had a DBH less than 1mm and a height above 1.5m to improve accuracy.
+We removed absent or unreasonable values from the dataset. This involved simply removing blank cells or "NAs", as well as measurements that were likely incorrect, probably as a result of improper unit conversions. Additionally, we improved uniformity in the dataset by removing samples that had a height less than 1.5m and lianas. This was because not all plots measured individuals smaller than 1.5m, and height measurements for lianas are less reliable, so we decided to only analyze trees. We also found some instances in our data where samples were relatively tall yet had a very small DBH. Since this likely due to a data collection or entry error, we removed any samples that had a DBH less than 1mm and a height above 1.5m to improve accuracy.
 
 ```{r cleaning dataset & columns, include=F}
 #remove data we don't want to use or is missing
@@ -267,20 +273,6 @@ data.subset <- data.subset %>%
   filter(DBH_mm > 1.0) # values below 1 were unreasonable for a height >1.5, most likely a unit error and the raw data will have to be examined and re-entered 
 ```
 
-```{r plot of DBH vs height, fig.cap="Height vs. DBH Comparison", echo=F, eval=T, message=F, warning=F}
-
-#Plot to examine the relationship between DBH and Height
-ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
-                                                   color = Project.Plot))+
-  geom_point()+
-  xlab("DBH (mm)") + ylab("Height (m)") + 
-  geom_smooth()
-#clearly there are errors with data entry or collection
-```
-
-Figure ___? shows that there are clearly errors in the data. The relationship between height and DBH should follow generally a positive linear trend especially in early life stages for a tree through seedling, sapling, juvenile, and early adult life stages. As trees mature they may slow their growth and reach an aysmptote or threshold for their height, but may continue to increase in diameter slowly. This trend is not shown for a large portion of the data. Of particular concern is the large spread of heights at small DBH values. It is unrealistic to believe that a 40m tree may have a DBH as small as 10mm. Therefore, it is likely that there is a high level of error within the dataset. This error may have occurred in 3 places. First, during data collection in the field the measurement may have been taken incorrectly. Secondly, the data may have been recorded incorrectly in the field or lastly when data was transferred from the paper data collection sheets into excel it may have been entered incorrectly. This is likely an issue of unit conversion and will ideally be resolved by checking the dataset against the raw data sheets. However, this peculiar relationship between height and DBH will impact the results of this analysis and may explain why many of the results do not fit with what was expected. 
-
-
 ```{r, include=F}
 #Height 
 summary(data.subset$Height_m)
@@ -293,13 +285,12 @@ data.subset$Veg_Type <- ifelse (data.subset$Height_m < 2.0, "Sapling", "Tree")
 
 ```
 
-We added in variables to support our research questions and analyses. We created two new columns: "Status" and "Distance_km"
+We also added in variables to support our research questions and analyses. We created two new columns: "Status" referring to defaunated or intact study plots and "Distance_km" from Makokou. The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses. A sample of our cleaned dataset is shown in Table 3.
 
 ```{r, echo=F, eval=T}
-kable(added.rows.table, caption="Added Variables to Dataset")
+kable(added.rows.table, caption="Added Variables to Dataset") %>% 
+  kable_styling(latex_options="scale_down")
 ```
-
-The categorical variable, "Status", will help with data visualization, and the "Distance_km" variable will be used as a proxy from the defaunation gradient in our analyses.
 
 ``` {r add new columns, include=F}
 #Add Status column - defaunated or intact forest
@@ -326,19 +317,13 @@ class(data.subset$Distance_km)
 summary(data.subset)
 ```
 
-The new dimensions of this dataset are:
-
-```{r, dataset dimensions, echo=F, eval=T}
-dim(data.subset)
-```
-
-Our cleaned dataset looks as follows:
 
 ```{r, head/columns, echo=F, eval=T}
-kable(head(data.subset), caption="Cleaned Dataset")
+kable(head(data.subset), caption="Head of Cleaned Dataset")  %>% 
+  kable_styling(latex_options="scale_down")
 ```
 
-Accidental misspellings are common in datasets such as this with thousands of manual entries of complex Latin species names. This is a concern because two samples that are supposed to be the same species, but have different spellings, will not be identified as the same species in our analyses. By looking at a list of the unique species names in the dataset, we found this to be the case in several instances. Identifying these errors and correcting them was very labor intensive as this can only really be done with the human eye using personal judgment as to what names were meant to be the same. Before cleaning the species names, there were 349 "species"; after correcting for spelling mistakes, there were only 323 species. This means that 26 "species" were falsely identified prior to data cleaning.
+Accidental misspellings are common in datasets such as this with thousands of manual entries of complex Latin species names. This is a concern because two samples that are supposed to be the same species, but have different spellings, will not be identified as the same species in our analyses. By looking at a list of the unique species names in the dataset, we found this to be the case in several instances. Identifying these errors and correcting them was quite labor intensive and can only be completed with the human eye and personal judgment as to what names are meant to be the same. Before cleaning the species names, there were 349 "species"; after correcting for spelling mistakes, there were only 323 species. This means that 26 "species" were falsely identified prior to data cleaning.
 
 ```{r, species data cleaning, include=F}
 
@@ -444,9 +429,45 @@ dim(clean.data)
 
 \newpage
 
-# Exploratory Analysis 
+# Methods
 
-## DBH
+## Research Question 1
+
+*Does Diameter at Breast Height (DBH) change along a defaunation gradient?*
+
+We began by analyzing our data through an examination of how DBH distribution (size classes) changes along the defaunation gradient. Diameter at Breast Height (DBH) is a measurement of the circumference of a tree trunk 1.37 meters or 4.5 feet above the ground. DBH may be used to understand the effect of defaunation within a stand. For example, a high frequency of thinner trees would indicate an earlier successional pattern and a higher frequency of larger/wider trees a more mature stand with less disturbance. DBH was taken in millimeters for all trees above 1.5m in height within the plots. We used a ggplot visualization and histogram in order to understand the frequency and size distribution of DBH of individual trees within each of the six plot sites. We added all sites with a facet wrap in order to directly compare distribution with the same scale. The x-axis is DBH in mm, with default bin sizes and the y-axis is frequency of occurrence. The sites were also ordered in distance from Makokou with sites EF_5A and EF_5B being the closest and IF_2A being the farthest away.
+
+## Research Question 2
+
+*Are there differences in Basal Area across a defaunation gradient?*
+
+Next, we used the cleaned data to generate summaries of stand characteristics at the plot level. These characteristics included the total basal area of each site, the standard deviation of basal area among individual trees, the species richness of each site, and the basal area per hectare of each plot. Basal area is the cross-sectional area of a tree at breast height. By summing basal area for a plot, the result provides a means of understanding the tree density of a stand. Basal area has implications for forest health, competition, and growth dynamics. Basal area was calculated by mutating the DBH column to reflect the basal area of each observation. DBH can be converted to basal area - in terms of square cm - from mm with the formula BA = ((pi*d^2^)/4)/100. The basal area for each site was then summed and converted to square meters for visualization. These summary values allowed for comparison of forest structure and species richness between project plots. 
+
+## Research Question 3
+
+*Does species composition change along a defaunation gradient?*
+
+We then calculated and visualized the proportion of basal area that each genera contributed to overall basal area for each plot. Unique species were too numerous for effective visualization so we used unique genera to provide a visual representation of the diversity of tree lineages at each plot. This was accomplished by extracting the first word (i.e., the genus) from the species ID column to create a genus column. The basal area for each genus at each plot was then summed and visualized alongside the basal area of other genera to show the overall contribution of each genus to the plot’s basal area. 
+
+## Research Question Synthesis
+
+Finally, we sought to uncover a relationship between distance from Makokou and forest structure and species richness with a linear model. The model describes basal area per hectare as a function of distance from Makokou and total number of unique species for each plot. Distance from Makokou serves as a proxy for position along the defaunation gradient where shorter distances are assumed to be more defaunated and farther distances are considered to be intact, faunated forest. The null hypothesis of both of these models is that there is no relationship between distance from Makokou (i.e., position along the defaunation gradient). Alternatively, if an explanatory variable in the model is deemed significant, it could provide some insight into how the defaunation gradient affects either basal area or species richness.
+
+# Results
+
+## Research Question 1
+
+*Does Diameter at Breast Height (DBH) change along a defaunation gradient?*
+
+The below visualizations indicate that all sites have a much higher frequency of thinner trees - smaller than 150mm in DBH (Figures 4 & 5). However, upon adjusting the x-axis scale, it is easier to see a full histogram of the plots. These visualizations led to two key findings:
+
+1. Plots closer to the city have higher overall frequencies and higher frequencies of large DBH trees. For example, plots DF_5A and DF_5B have higher frequencies of larger trees.
+
+2. Plots farther away from the city, such as IF_2A has fewer overall trees and the trees that are present are much thinner in DBH. 
+
+Since DBH for all of the plots was skewed to the smaller size class, this tends to indicate more defaunation in all plots. Also it was unexpected to have larger DBH trees closer to town and thinner trees in the single 'intact' forest plot. One would expect the opposite to be true with more defaunation close to the town and wider trees farthest away. One potential explanation for this may be the existence of remaining old growth trees in these plots due to the short time scale for defaunation in this area (approximately the last 50 years). Over a greater time period the large trees would senesce and die and not be replaced due to lack of seed dispersers.
+
+
 ```{r DBH graphs, include=F}
 
 #basic visualization
@@ -529,10 +550,10 @@ allsitesordered_limitedx <- ggplot(transform(clean.data,
                                                                           "IF_2A")))) +
   geom_histogram(aes(x = DBH_mm, color = Project.Plot)) + 
   facet_wrap(vars(Project.Plot)) + xlim(0,150) +
-  xlab("DBH in mm") + ylab("Frequency") + ggtitle("DBH across Sites")
+  xlab("DBH in mm") + ylab("Frequency")
 ```
 
-```{r, fig.cap="DBH per Site", echo=F, eval=T, message=F, warning=F}
+```{r, fig.cap="Distribution of DBH Size Classes per Plot", echo=F, eval=T, message=F, warning=F}
 print(allsitesordered_limitedx)
 ```
 
@@ -549,12 +570,11 @@ DBHstats <- ggplot(clean.data,
 
 ```
 
-```{r, fig.cap="DBH Across Sites", echo=F, eval=T, message=F, warning=F}
+```{r, fig.cap="Distribution of DBH Size Classes Across Plots", echo=F, eval=T, message=F, warning=F}
 print(DBHstats)
 ```
 
-<<<<<<< HEAD
-#LMs
+
 ```{r LM data preparation, include=F}
 
 # Analysis
@@ -649,7 +669,7 @@ ggplot(treedata, aes(x = basal_area_cm, fill = Project.Plot)) +
   facet_wrap(treedata$Project.Plot) +
   labs(title = "Basal area distribution of study plots")
 ```
-So it seems like most sites are pretty not uniform, and small trees are over-represented at each location. Let's compare sites to see which site has the most species.
+
 ```{r, include=F}
 species_by_plot <- ggplot(data=SiteSummaries, aes(x=Project.Plot, y=total_species, fill = Project.Plot)) +
   geom_bar(stat="identity") +
@@ -662,10 +682,25 @@ basal_area_by_plot <- ggplot(data=SiteSummaries, aes(x=Project.Plot, y=total_bas
 library(cowplot)
 ```
 
-```{r, fig.cap="Species Richness & Basal Area by Plot", echo=F, eval=T, message=F, warning=F}
-plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
+## Research Question 2
+
+*Are there differences in Basal Area across a defaunation gradient?*
+
+Results of this exploratory analysis reveal differences in basal area and species richness for each plot. As basal area is a function of DBH, the distribution of basal area across plots mirrored that of its DBH distribution (Figure 4). This result affirms that trees at each site are mostly small with few trees above 10 cm2 of basal area and even fewer - if any - above 20 cm^2^. Species richness values ranged between 79 and 148; but four out of the six plots had a mean species richness of 85 (Figure 6). The two plots with the greatest species richness were DF_6A and DF_6B which had 141 and 148 unique species respectively. Total basal area at each plot ranged from 0.92 m^2^  to 15.35 m^2^. The plots with the greatest basal area were plots DF_5A and DF_6B which had 15.35m^2^ and 11.66 m^2^ respectively. Interestingly, the intact forest plot , IF_2A, had the lowest basal area at 0.92 m^2^. Given IF_2A's high species richness but low basal area, these results seem to suggest that IF_2A has many small trees, but few large ones. Overall, there does not appear to be a strong relationship between number of tree species and basal area.
+```{r, fig.cap = "Species Richness and Basal Area by Plot", echo=F, eval=T, message=F, warning=F, out.width="95%"}
+
+fig6_plot <- plot_grid(species_by_plot, basal_area_by_plot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
+
+#we tried to use fig.cap for fig6_plot, but it wouldn't recognize it as a figure, so we had to read it in as a .png. sorry!
+knitr::include_graphics("./GoldenGriffithsKnierMalinowski_ENV872_Project_files/figure6.png")
+
 ```
-So from this we can see that there are no great disparities between sites when it comes to species. At 146, DF_6B has the most species and at 96 DF_5B has the fewest species. Most sites have right around 100. We can also see how each site compares in terms of basal area - i.e., how densely forested each site is. IF_2A has the lowest basal area where DF_5A has the greatest at around 15 square meters per hectare. Given IF_2A's high species richness but low basal area, these data seem to suggest that IF_2A has many small trees but few large ones. Let's continue our exploration by seeing which genuses contribute the most to each site's basal area.
+
+## Research Question 3
+
+*Does species composition change along a defaunation gradient?*
+
+By combining genus richness with basal area into treeplots, we are able to compare the abundance of tree genera at each plot. Specifically, treeplots allow us to visually represent the contribution of basal area by each genus at each plot. No single tree genera was overwhelmingly dominant across all plots. Rather, each plot had one to three genera that contributed a plurality of the basal area. Plot DF_6A, which had the greatest number of unique species, was dominated by Beilschmiedia (14% of basal area or 10,438 cm^2^), Petersianthus (9% of basal area or 6,268 cm^2^), and Celtis (8.5% of basal area or 5,986 cm^2^) species (Figure 7). Meanwhile, IF_2A, which had the smallest amount of basal area, was dominated by a single genus: Thomandersia (56% of basal area or 5202 cm^2^) (Figure 8). Overall, species composition did change along the defaunation gradient, but there were no predictable or observable trends that dictated these changes. 
 
 ```{r DF_3B, include=F}
 # Genus basal area at each site
@@ -734,7 +769,7 @@ ggplot(DF_6A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
                     place = "centre",
                     size = 15,
                     grow = TRUE) +
-  scale_fill_viridis(option="turbo")
+  scale_fill_viridis_c(option="turbo")
 ```
 
 ```{r DF_6B, include=F}
@@ -772,12 +807,11 @@ ggplot(IF_2A_genus_summary, aes(area = genus_basal_area, fill = genus_basal_area
 
 ```
 
-From these graphs we can see which genera make up the majority of basal area at each site. So how similar are these sites to one another? I wonder. ANOVA?
+## Research Question Synthesis
 
+Finally, based on the data from these plots there does not appear to be a meaningful relationship between distance from Makokou, species richness and basal area. Based on our correlation plot, basal area at each plot appears to be negatively correlated with distance from Makokou. However, when we modeled the relationship basal area as explained by distance from Makokou and species richness the result was not significant (p = 0.16). As such, we cannot reject the null hypothesis that there is no relationship between distance from Makokou and basal area. The relationship between distance from Makokou and basal area had a p-value of 0.11. Though this is not significant, it does suggest that there is a negative correlation between these two values and that with each additional kilometer from Makokou, basal area is reduced by 1.3 m^2^ (Figure 9).
 
-Let's begin to see if there is any relationship between basal area, species richness, and distance to towns (i.e., along the defaunation gradient)?.
-
-```{r, fig.cap="Basal Area and Distance to Developed Area", echo=F, eval=T, message=F, warning=F}
+```{r fig 9, fig.cap="Basal Area and Distance to Developed Area", echo=F, eval=T, message=F, warning=F}
 # Scatter plot of distance from town and basal area per acre
 ggplot(SiteSummaries, aes(x = Mean_dist, y = basal_area_per_ha, color = Project.Plot)) +
   geom_point() +
@@ -801,7 +835,6 @@ ggplot(SiteSummaries, aes(x = Mean_dist, y = total_species, color = Project.Plot
 
 ```
 
-Looking at these graphs, it doesn't appear that there's much of an obvious relationship between basal area, species richness, and distance along the defaunation gradient. Still, looks can be deceiving. Let's feed these data into a linear model to see what relationships can be statistically proved. We begin by checking for correlations among variables with a corrplot. 
 
 ```{r, include=F}
 library(corrplot)
@@ -812,9 +845,6 @@ corrplot(cor(SiteSummaryNumbers))
 ```
 
 
-from this it appears that basal area per hectare is negatively correlated with mean distance at the same time, there appears to be a weak positive correlation between total species and mean distance. Let's build a model and see how well these correlations predict basal area and species richness.
-
-# Analysis 
 
 ```{r, include=F}
 # Linear model describing relationship between basal area per hectare as a function of total species and distance to town. 
@@ -829,32 +859,27 @@ species_richness_lm <- lm(data = SiteSummaries, total_species ~ Mean_dist)
 summary(species_richness_lm)
 ```
 
-In this linear model we use species richness and distance from developed area to predict the basal area per hectare of a given site. The null hypothesis is that there is no relationship between basal area per hectare, species richness, and distance to town. The alternative hypothesis is that either both species richness and/or distance to town will influence basal area per hectare. The results of the model (p = 0.16) indicate that no such significant (p<0.05) relationships exist in this subset of data. However, based on these observations (n = 6), there does appear to be a weak negative relationship (p = 0.09) between distance to town and basal area per hectare. According to the model, with every additional kilometer of distance there is an associated 1.3 square meter decline in basal area of forested land. Once again, these relationships are not considered significant, which means the explanatory variables included in this model are not sufficient to explain observed patterns in stand density along the defaunation gradient. There is no relationship between distance to town and species richness (p = 0.74).
-
-## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
-
-## Question 2: 
-
-
-
 
 \newpage
 
 # Summary and Conclusions
 
-Our data cleaning and analyses have provided an essential starting point to further explore the effects of defaunation on tropical forest structure and composition within Ivindo National Park Gabon. Although much of the results differ from our expected outcomes a key finding in this exploration has been uncovering errors in the dataset that may lead to faulty results or uninterpretable findings. We were able to address our *overarching research question* - "How does defaunation affect forest structure and composition in Ivindo National Park, Gabon?" although further data collection, checking, and analysis is necessary.
 
-*RQ1 & RQ2 - Forest Structure*
-Does average diameter at breast height (DBH) change along a defaunation gradient?
+```{r plot of DBH vs height, fig.cap="Height vs. DBH Comparison", echo=F, eval=T, message=F, warning=F}
 
-Are there differences in Basal Area across a defaunation gradient?
+#Plot to examine the relationship between DBH and Height
+ggplot(data.subset, aes(x = DBH_mm, y = Height_m, 
+                                                   color = Project.Plot))+
+  geom_point()+
+  xlab("DBH (mm)") + ylab("Height (m)") + 
+  geom_smooth()
+#clearly there are errors with data entry or collection
+```
 
+Figure 10 shows that there are clearly errors in the data. The relationship between height and DBH should follow a positive linear trend especially in early life stages for a tree through seedling, sapling, juvenile, and early adult life stages. As trees mature they may slow their growth and reach an asymptote or threshold for their height, but may continue to increase in diameter slowly. This trend is not shown for a large portion of the data. Of particular concern is the large spread of heights at small DBH values. It is unrealistic to believe that a 40m tree may have a DBH as small as 10mm. Therefore, it is likely that there is a high level of error within the dataset. This error may have occurred in 3 places. First, during data collection in the field, the measurement may have been taken incorrectly. Secondly, the data may have been recorded incorrectly in the field or lastly when data was transferred from the paper data collection sheets into excel it may have been entered incorrectly. This is likely an issue of unit conversion and will ideally be resolved by checking the dataset against the raw data sheets. However, this peculiar relationship between height and DBH likely impacted the results of this analysis and may explain why many of the results do not agree with expected outcomes. 
 
-*RQ3 - Species Composition*
-Does species composition change along a defaunation gradient? 
+However, our data cleaning and analyses have provided an essential starting point to further explore the effects of defaunation on tropical forest structure and composition within Ivindo National Park, Gabon. Although the results differ from our expected outcomes a key finding in this exploration has been uncovering errors in the dataset that may lead to faulty results or ecologically uninterpretable findings. We were able to address our *overarching research question* - "How does defaunation affect forest structure and composition in Ivindo National Park, Gabon?" - although further data collection, data cleaning, and analysis is necessary. Overall, no specific trends were found between defaunation (using distance to village as a proxy for defaunation) and our forest structure and composition variables (DBH, basal area, and genus richness). In addition to the discrepancies in the DBH and height data (Figure 10) another factor contributing to lack of significant results may be that amongst the 6 plots used in our analyses only one was considered intact forest. A greater dataset including the remaining plots along the gradient may help to draw more conclusions about these relationships and uncover any trends. Currently a team of Gabonese researchers and colleagues from the Poulsen Lab are conducting this field work in Gabon. Re-analyses will be necessary once a completed dataset with all plots and all plant IDs is available. The continued exploration and analysis of reliable data will be essential to draw conclusions about the effects of defaunation on carbon sequestration and to advance policy and resource management.
 
-
-Overall, no specific trends were found between defaunation (using distance to village as a proxy for defaunation) and our forest structure and composition variables (DBH, basal area, and genus richness). In addition to the discrepencies in the DBH and height data another factor contributing to lack of significant results may be that amongst the 6 plots used in our analyses only one was considered intact forest. A greater dataset including the remaming plots along the gradient may help to draw more conclusions about these relationships and uncover any trends. There is currently a team of Gabonese researchers and colleagues from the Poulsen Lab conducting this work in Gabon. Re-analyses will be necessary once a completed dataset with all plots and all plant IDs is cleaned and available. Just as important as understanding defaunation implications for carbon sequestration in tropical forests is the need for good, reliable data to draw conclusions to advance policy and management. 
 
 \newpage
 
